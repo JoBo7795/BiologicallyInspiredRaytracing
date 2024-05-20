@@ -1,0 +1,17 @@
+J:/VisualStudioProjects/Raytracing/build/CMakeFiles/INSTALL.dir
+J:/VisualStudioProjects/Raytracing/build/CMakeFiles/RUN_TESTS.dir
+J:/VisualStudioProjects/Raytracing/build/CMakeFiles/ALL_BUILD.dir
+J:/VisualStudioProjects/Raytracing/build/CMakeFiles/ZERO_CHECK.dir
+J:/VisualStudioProjects/Raytracing/build/glm/CMakeFiles/glm_dummy.dir
+J:/VisualStudioProjects/Raytracing/build/glm/CMakeFiles/INSTALL.dir
+J:/VisualStudioProjects/Raytracing/build/glm/CMakeFiles/RUN_TESTS.dir
+J:/VisualStudioProjects/Raytracing/build/test/CMakeFiles/INSTALL.dir
+J:/VisualStudioProjects/Raytracing/build/test/CMakeFiles/RUN_TESTS.dir
+J:/VisualStudioProjects/Raytracing/build/test/bug/CMakeFiles/INSTALL.dir
+J:/VisualStudioProjects/Raytracing/build/test/bug/CMakeFiles/RUN_TESTS.dir
+J:/VisualStudioProjects/Raytracing/build/test/core/CMakeFiles/INSTALL.dir
+J:/VisualStudioProjects/Raytracing/build/test/core/CMakeFiles/RUN_TESTS.dir
+J:/VisualStudioProjects/Raytracing/build/test/gtc/CMakeFiles/INSTALL.dir
+J:/VisualStudioProjects/Raytracing/build/test/gtc/CMakeFiles/RUN_TESTS.dir
+J:/VisualStudioProjects/Raytracing/build/test/gtx/CMakeFiles/INSTALL.dir
+J:/VisualStudioProjects/Raytracing/build/test/gtx/CMakeFiles/RUN_TESTS.dir
