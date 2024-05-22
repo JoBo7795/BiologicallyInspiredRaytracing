@@ -89,15 +89,10 @@ CPUMode::lambdaPrimeVal =
 int notLitPoints = 0;
 float iris_radius = 2.05f;
 
-void CPUMode::InitCPUMode(glm::vec3 in_imagePlanePos, glm::vec3 in_imagePlaneDir) {
+void CPUMode::InitCPUMode(glm::vec3 in_imagePlanePos, glm::vec3 in_imagePlaneDir)
+{
 
-    //Camera cam = Camera(in_imagePlanePos);
-    Camera* cam = Renderer::GetCamera();
-
-    //cam->SetPosition(in_imagePlanePos);
-    //cam->SetDirection(in_imagePlaneDir);
-    //cam->InitRTCamera();
-    
+    Camera* cam = Renderer::GetCamera();  
 
     lowerLeftCorner = cam->lower_left_corner;
     horizontal = cam->horizontal;
@@ -106,7 +101,8 @@ void CPUMode::InitCPUMode(glm::vec3 in_imagePlanePos, glm::vec3 in_imagePlaneDir
 }
 
 
-void CPUMode::SetDebugParams(glm::vec3 in_imagePlanePos, glm::vec3 in_imagePlaneDir) {
+void CPUMode::SetDebugParams(glm::vec3 in_imagePlanePos, glm::vec3 in_imagePlaneDir)
+{
 
     debugCam = Camera(in_imagePlanePos);
 
@@ -124,12 +120,6 @@ void CPUMode::SetDebugParams(glm::vec3 in_imagePlanePos, glm::vec3 in_imagePlane
 
 void CPUMode::Render() {
 
-    // glm::vec4 posL = (debugCam.GetViewMat() * glm::vec4(1.0, 0.0, 0.0, 1.0));
-    // 
-    // 
-    // glm::vec3 normalizedDir = posL;// 0.9 * 2 * -1;
-    // glm::vec3 lensOrig = normalizedDir;
-    // 
     lens = LensData(debugCam.GetPosition());
     ProgramParams::f = lens.calcF();
     ProgramParams::dpt = lens.calcOneByF();
@@ -138,14 +128,9 @@ void CPUMode::Render() {
 
      ProgramParams::g = 21.0;
      double dval = lens.calcD();
-     lens.d = dval;
-     
+     lens.d = dval;     
      
      lens.dTolensRad();
-     
-     // ProgramParams::f = lens.calcF();
-     // ProgramParams::dpt = lens.calcOneByF();
-     // ProgramParams::calcImageDist();
 
     std::cout << "f: " << ProgramParams::f << " dpt: " << ProgramParams::dpt << " dval: " << dval << std::endl;
 
@@ -156,7 +141,6 @@ void CPUMode::Render() {
     
 
     addCirclePoints(circleCenter, circleRad, numCircles, numPointsPerCircle, normal);
-    //auto rayArr = ComputeDebugRays(lookFrom);
     
     double picBrightness = 0.0;
 
@@ -190,27 +174,13 @@ void CPUMode::Render() {
                     dist = glm::length(glm::vec3(sphere.position-rayPos));
                 }
             }
-            
-            
-            //ProgramParams::g = 10.0;
-            //ProgramParams::calcImageDist();
 
             if (ProgramParams::debugMode) {
 
                 debugCam.SetPosition(glm::vec3(-ProgramParams::b, ProgramParams::posY, ProgramParams::posZ));
                 initlowerLeftCorner.x += 1.0;
 
-
-
-
-                //glm::vec3 posL = (debugCam.GetViewMat() * glm::vec4(1.0, 0.0, 0.0, 1.0));
-
-
-                //glm::vec3 normalizedDir = posL;// 0.9 * 2 * -1;
-    
-
-                debugCam.SetPosition(lens.lensOrigin + glm::normalize(lens.lensOriginLeft) * glm::vec3(ProgramParams::b));
-                
+                debugCam.SetPosition(lens.lensOrigin + glm::normalize(lens.lensOriginLeft) * glm::vec3(ProgramParams::b));                
 
             }
 
@@ -221,17 +191,11 @@ void CPUMode::Render() {
 
                 pixel_color += glm::normalize(glm::vec3(ray_color(r, depth)));
 
-                //if (rayIntersectsPlane(r.origin, r.direction, initlowerLeftCorner, glm::cross(initHorizontal, initVertical), initHorizontal, initVertical))
-                //    pixel_color = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
-
                 for (int i = 0; i < 3; i++) {
                     r.rgb = i;
                     if (drawColoredRays(r)) {
 
-
                         pixel_color = glm::vec3((r.color / float(numPoints)));
-                        //pixel_color = glm::normalize(glm::vec3((r.color)));
-                        //std::cout << glm::to_string(pixel_color) << std::endl;
 
                         int brightnessVal = notLitPoints / numPoints;
 
@@ -243,14 +207,10 @@ void CPUMode::Render() {
 
                     }
                 }
-                //pixel_color = glm::normalize(pixel_color);
+
                 pixels[index++] = static_cast<int>(255.999 * (pixel_color.x)/numPoints);
                 pixels[index++] = static_cast<int>(255.999 * (pixel_color.y)/numPoints);
                 pixels[index++] = static_cast<int>(255.999 * (pixel_color.z)/numPoints);
-
-                //pixels[index++] = static_cast<int>(pixel_color.x);
-                //pixels[index++] = static_cast<int>(pixel_color.y);
-                //pixels[index++] = static_cast<int>(pixel_color.z);
             }
             else {
                 float accBrightness = 0.0;
@@ -264,7 +224,7 @@ void CPUMode::Render() {
                         initRay.rgb = 4;
 
                         glm::vec3 colorVal = glm::vec3(ray_color(initRay, depth));
-                        float brightnessVal = 0.3f;//float(numPoints - notLitPoints) / numPoints;
+                        float brightnessVal = 0.3f;
                         glm::vec3 brightness = glm::vec3(brightnessVal);
 
                         float brightnessThreshold = .1;
@@ -308,38 +268,9 @@ void CPUMode::Render() {
                         notLitPoints = 0;
                     }
                     
-                    //std::cout << "";
                 }
-                //pixel_color = glm::normalize(pixel_color);
+
                 accBrightness /= (numPoints*3);
-                // if (accBrightness >= 1.0) {
-                //     pixel_color.x *= lambdaVal[690];
-                //     pixel_color.y *= lambdaVal[550];
-                //     pixel_color.z *= lambdaVal[440];
-                // }
-                // else if ((accBrightness < 1.0) && (accBrightness > 0.1)) {
-                //     pixel_color.x *= (lambdaVal[690] + lambdaPrimeVal[690])/2;
-                //     pixel_color.y *= (lambdaVal[550] + lambdaPrimeVal[550])/2;
-                //     pixel_color.z *= (lambdaVal[440] + lambdaPrimeVal[440])/2;
-                // }
-                // else {
-                //     pixel_color.x *= lambdaPrimeVal[690];
-                //     pixel_color.y *= lambdaPrimeVal[550];
-                //     pixel_color.z *= lambdaPrimeVal[440];
-                // }
-
-
-                // pixel_color.x *= lerp(lambdaVal[690], lambdaPrimeVal[690], accBrightness);
-                // pixel_color.y *= lerp(lambdaVal[540], lambdaPrimeVal[540], accBrightness);
-                // pixel_color.z *= lerp(lambdaVal[440], lambdaPrimeVal[440], accBrightness);
-
-                //std::cout << "accBrightness: " << accBrightness << "\n";
-
-                // if (accBrightness < 0.4) {
-                //     iris_radius -= 0.01f;
-                //     Render();
-                // }
-
 
                 float pixCx = (pixel_color.x / numPoints),
                     pixCy = (pixel_color.y / numPoints),
@@ -349,7 +280,7 @@ void CPUMode::Render() {
                 pixels[index++] = static_cast<int>(255.999 * pixCy);
                 pixels[index++] = static_cast<int>(255.999 * pixCz);
 
-                picBrightness += ((pixCx + pixCy + pixCz) / 3) <= 0 ? 0 : (((pixCx + pixCy + pixCz) / 3));// > 1 ? 1 : ((pixel_color.x + pixel_color.y + pixel_color.z) / 3));
+                picBrightness += ((pixCx + pixCy + pixCz) / 3) <= 0 ? 0 : (((pixCx + pixCy + pixCz) / 3));
             }
 
 
@@ -363,20 +294,6 @@ void CPUMode::Render() {
     picBrightness /= (ProgramParams::windowWidth * ProgramParams::windowHeight);
     std::cout << "brightness: " << picBrightness << std::endl;
 
-     // if (picBrightness > 0.1) {
-     //     iris_radius -= 0.0025f;
-     //     std::cout << "iris_radius: " << iris_radius << std::endl;
-     // 
-     //    // DataWriter::WriteToProgramPathFile();
-     //     std::string sPart = (std::to_string(iris_radius) + (char*)(".png"));
-     //     std::string fPath = ProgramParams::path + sPart;
-     // 
-     // 
-     // 
-     //     stbi_write_jpg(fPath.c_str(), ProgramParams::windowWidth, ProgramParams::windowHeight, CHANNEL_NUM, CPUMode::pixels, 100);
-     // 
-     //     Render();
-     // }
 
 }
 
@@ -443,7 +360,7 @@ bool CPUMode::world_hit(float t_min, Ray& r, float t_max, hit_record& rec) {
     Disc iris;
     iris.origin = glm::vec3(0.0);
     iris.normal = glm::vec3(1.0, 0.0, 0.0);
-    //iris.radius = 2.02;
+    
     iris.radius = iris_radius;
 
     if (doesRayIntersectDisc(r, iris)) {
@@ -519,17 +436,14 @@ bool CPUMode::world_hit(float t_min, Ray& r, float t_max, hit_record& rec) {
 
         for (int i = int(dO.IndiBufferRangeL);
             i < (int(dO.IndiBufferRangeR)); i += 3) {
-
-            //if (!sphere_hit_simple(r, boundingSphere)) break;
-
-
+           
             auto translation = goList[o].GetTranslation();
 
             if (o <= 0) {
-                tri.position[0] = /*lenseTransform */ translation * glm::vec4(dO.shapeData.vertices[dO.shapeData.indices[i] * 6], dO.shapeData.vertices[dO.shapeData.indices[i] * 6 + 1], dO.shapeData.vertices[dO.shapeData.indices[i] * 6 + 2], 1.0f);
-                tri.position[1] = /*lenseTransform */ translation * glm::vec4(dO.shapeData.vertices[dO.shapeData.indices[i + 1] * 6], dO.shapeData.vertices[dO.shapeData.indices[i + 1] * 6 + 1], dO.shapeData.vertices[dO.shapeData.indices[i + 1] * 6 + 2], 1.0f);
-                tri.position[2] = /*lenseTransform */ translation * glm::vec4(dO.shapeData.vertices[dO.shapeData.indices[i + 2] * 6], dO.shapeData.vertices[dO.shapeData.indices[i + 2] * 6 + 1], dO.shapeData.vertices[dO.shapeData.indices[i + 2] * 6 + 2], 1.0f);
-               // std::cout << i << std::endl;
+                tri.position[0] = translation * glm::vec4(dO.shapeData.vertices[dO.shapeData.indices[i] * 6], dO.shapeData.vertices[dO.shapeData.indices[i] * 6 + 1], dO.shapeData.vertices[dO.shapeData.indices[i] * 6 + 2], 1.0f);
+                tri.position[1] = translation * glm::vec4(dO.shapeData.vertices[dO.shapeData.indices[i + 1] * 6], dO.shapeData.vertices[dO.shapeData.indices[i + 1] * 6 + 1], dO.shapeData.vertices[dO.shapeData.indices[i + 1] * 6 + 2], 1.0f);
+                tri.position[2] = translation * glm::vec4(dO.shapeData.vertices[dO.shapeData.indices[i + 2] * 6], dO.shapeData.vertices[dO.shapeData.indices[i + 2] * 6 + 1], dO.shapeData.vertices[dO.shapeData.indices[i + 2] * 6 + 2], 1.0f);
+               
            
             }
             else {
@@ -571,14 +485,10 @@ bool CPUMode::world_hit(float t_min, Ray& r, float t_max, hit_record& rec) {
                 rec.arrIndex = i;
                 rec.geoType = TRIANGLE;
                 rec.tri = tri;
-                //rec.normal = tri.normal.xyz;
 
                 rec.tri.fuzzAndmat_ptr.y = DIELECTRIC;
                 rec.front_face = check_front_face(r, tri.normal);
                 rec.normal = set_face_normal(r, tri.normal);
-
-
-               // std::cout << "normal:" << glm::to_string(tri.normal) << std::endl;
 
                 r.hit_normal_dir = set_face_normal(r, tri.normal);
                 r.hit_normal_orig = glm::vec3(r.direction * float(temp_rec.t));
@@ -673,9 +583,8 @@ bool CPUMode::RayTriangleIntersect(
 
     rec.t = t;
     rec.p = ray_at(r.origin, r.direction, rec.t);
-
-    //vec3 outward_normal = tri.normal.xyz;//glm::normalize(glm::cross(edge1, edge2));//(rec.p - sphere.positionAndradius.xyz) / sphere.positionAndradius.w;
-    glm::vec3 outward_normal = glm::normalize(glm::cross(edge1, edge2));//(rec.p - sphere.positionAndradius.xyz) / sphere.positionAndradius.w;
+    
+    glm::vec3 outward_normal = glm::normalize(glm::cross(edge1, edge2));
     rec.front_face = check_front_face(r, outward_normal);
     rec.normal = set_face_normal(r, outward_normal);
     rec.mat_ptr = int(tri.fuzzAndmat_ptr.x);
@@ -828,8 +737,7 @@ glm::vec4 CPUMode::ray_color2(Ray& r, bool& hit, bool& no_reflect, bool& no_shad
                 }
                 break;
             default:
-                glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-                //hit = false;
+                glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);               
                 break;
             }
         }
@@ -849,12 +757,9 @@ glm::vec4 CPUMode::ray_color2(Ray& r, bool& hit, bool& no_reflect, bool& no_shad
                 no_shadow = true;
 
                 return attenuation;
-                //return vec4(rec.normal,1.0f);
-
+                
             }
-
-
-            //break;
+                       
         }
         else if (rec.geoType == IRIS) {
 
@@ -883,13 +788,9 @@ glm::vec4 CPUMode::ray_color2(Ray& r, bool& hit, bool& no_reflect, bool& no_shad
             case int(DIELECTRIC):
                 if (dielectric_scatter(r, rec, attenuation, scattered, rec.tri)) {
 
-                    hit = true;
-
-                   // std::cout <<" ray dir before: " << glm::to_string(r.direction) << std::endl;
+                    hit = true;                  
 
                     r = scattered;
-
-                   // std::cout << " ray dir after: " << glm::to_string(r.direction) << std::endl;
 
                     no_shadow = true;
 
@@ -925,8 +826,7 @@ glm::vec4 CPUMode::ray_color2(Ray& r, bool& hit, bool& no_reflect, bool& no_shad
                 }
                 break;
             default:
-                glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-                //hit = false;
+                glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);               
                 break;
             }
         }
@@ -942,9 +842,7 @@ glm::vec4 CPUMode::ray_color2(Ray& r, bool& hit, bool& no_reflect, bool& no_shad
     hit = false;
     glm::vec3 unit_direction = glm::normalize(r.direction);
     float t = 0.5 * (unit_direction.y + 1.0);
-    //return glm::vec4(0.0f);//vec4((1.0 - t) * vec4(1.0, 1.0, 1.0, 1.0) + t * vec4(0.5, 0.7, 1.0, 1.0));
-    r.brightness = 1.;
-    //return glm::vec4(0.0);
+    r.brightness = 1.;    
     return glm::vec4((1.0f - t) * glm::vec4(1.0f, 1.0f, 1.0f, 1.0f) + t * glm::vec4(0.5f, 0.7f, 1.0f, 1.0f));
 
 }
@@ -960,9 +858,7 @@ glm::vec4 CPUMode::ray_color(Ray& r, int depth) {
         r.currDepth = depth;
         bool no_reflect = false;
         bool no_shadow = false;
-        color = ray_color2(r, hit, no_reflect, no_shadow);
-
-        //fColor *= float(!shadow_ray(r.origin, -glm::normalize((r.origin - lightPos))) || no_shadow || !shadows_active) * color;
+        color = ray_color2(r, hit, no_reflect, no_shadow);       
         fColor *= color;
 
 
@@ -977,13 +873,8 @@ glm::vec4 CPUMode::ray_color(Ray& r, int depth) {
 
     glm::vec3 unit_direction = glm::normalize(r.direction);
     float t = 0.5f * (unit_direction.y + 1.0f);
-    r.brightness = 1.;
-    //return glm::vec4(0.0);
+    r.brightness = 1.;    
     return (glm::vec4((1.0f - t) * glm::vec4(1.0f, 1.0f, 1.0f, 1.0f) + t * glm::vec4(0.5f, 0.7f, 1.0f, 1.0f)));
-    
-
-
-    //return vec4(1.0f, 0.0f, 0.0f, 1.0f);
 }
 
 
@@ -1003,37 +894,17 @@ bool CPUMode::camera_get_ray(float s, float t, Ray& ray, int o, bool lp) {
 
     }
 
-
     return true;
 }
 
 bool CPUMode::camera_get_debug_ray(float s, float t, Ray& ray, int o, bool lp) {
 
     if (lp) {
-
-
-        // working rays
-        //ray.origin = glm::vec3((initlowerLeftCorner + s * initHorizontal + t * initVertical));
-        //ray.origin.x += 1.0f;
-        //ray.direction = normalize(glm::vec3(circlePoints[o] - ray.origin));
-
-
-       //  float part = (0.4f / numPoints) * o;
-       //  float y = (-0.2f+ (0.4f / numPoints)) + part;
-       // 
-       // 
-       // 
+       
        glm::vec3 origin;
-       //// // //ray.origin = glm::vec3((initlowerLeftCorner + s * initHorizontal + t * initVertical));
-       //if(o < 3)
+      
        ray.origin = debugCam.GetPosition();
-           //ray.origin = glm::vec3(-(ProgramParams::b),0.0,0.0);// glm::vec3((circlePoints[o]));
-       //else
-         //  ray.origin = glm::vec3(-6.0f, -0.15f, 0.0f);
-       //// 
-       //// ray.origin = glm::vec3(6.0f, y, 0.0f);
-       ////ray.origin.x += 1.0f;
-       ////ray.direction = glm::normalize(glm::vec3((circlePoints[o])) - ray.origin);
+        
        if(o == 0)
            ray.direction = glm::normalize(glm::vec3(glm::vec3(0.0,.15,0.0)) - ray.origin);
        if (o == 1)
@@ -1045,16 +916,7 @@ bool CPUMode::camera_get_debug_ray(float s, float t, Ray& ray, int o, bool lp) {
        if (o == 4)
            ray.direction = glm::normalize(glm::vec3(glm::vec3(0.0, 1.0, 0.0)) - ray.origin);
        if (o == 5)
-           ray.direction = glm::normalize(glm::vec3(glm::vec3(0.0, -0.30, 0.0)) - ray.origin);
-
-       //ray.direction = glm::normalize(glm::vec3(glm::vec3(0.0f, y, 0.0f)) - ray.origin);
-
-        //ray.origin = glm::vec3((initlowerLeftCorner + s * initHorizontal + t * initVertical));
-        ////
-        //ray.direction = glm::normalize(glm::vec3((circlePoints[o])) - ray.origin);
-        // 
-        // 
-        //ray.direction = glm::normalize(glm::vec3(0.0f, 0.05f, 0.0f) - ray.origin);
+           ray.direction = glm::normalize(glm::vec3(glm::vec3(0.0, -0.30, 0.0)) - ray.origin);     
 
     }
     else {
@@ -1125,10 +987,6 @@ bool CPUMode::lambertian_scatter(
 
     glm::vec3 scatter_direction = rec.normal + random_unit_vector();
 
-    // Catch degenerate scatter direction
-    //if (ray_near_zero(scattered.direction))
-      //  scatter_direction = rec.normal;
-
     scattered.origin = rec.p;
     scattered.direction = scatter_direction;
 
@@ -1142,10 +1000,6 @@ bool CPUMode::lambertian_scatter(
 
     glm::vec3 scatter_direction = rec.normal + random_unit_vector();
 
-    // Catch degenerate scatter direction
-    //if (ray_near_zero(scattered.direction))
-      //  scatter_direction = rec.normal;
-
     scattered.origin = rec.p;
     scattered.direction = scatter_direction;
 
@@ -1156,12 +1010,7 @@ bool CPUMode::lambertian_scatter(
 bool CPUMode::plain_color(
     Ray& r_in, hit_record& rec, glm::vec4& attenuation, Ray& scattered, Sphere& sphere)
 {
-
     glm::vec3 scatter_direction = rec.normal;
-
-    // Catch degenerate scatter direction
-    //if (ray_near_zero(scattered.direction))
-      //  scatter_direction = rec.normal;
 
     scattered.origin = rec.p;
     scattered.direction = scatter_direction;
@@ -1176,10 +1025,6 @@ bool CPUMode::plain_color(
 
     glm::vec3 scatter_direction = rec.normal;
 
-    // Catch degenerate scatter direction
-    //if (ray_near_zero(scattered.direction))
-      //  scatter_direction = rec.normal;
-
     scattered.origin = rec.p;
     scattered.direction = scatter_direction;
 
@@ -1190,7 +1035,7 @@ bool CPUMode::plain_color(
 bool CPUMode::metal_scatter(Ray& r_in, hit_record& rec, glm::vec4& attenuation, Ray& scattered, Sphere& sphere) {
     glm::vec3 reflected = reflect(glm::normalize(r_in.direction), rec.normal);
     scattered.origin = rec.p;
-    scattered.direction = reflected;// +(sphere.fuzzAndmat_ptr.y * random_in_unit_sphere());
+    scattered.direction = reflected;
     attenuation = sphere.albedo;
     return (glm::dot(scattered.direction, rec.normal) > 0);
 }
@@ -1198,7 +1043,7 @@ bool CPUMode::metal_scatter(Ray& r_in, hit_record& rec, glm::vec4& attenuation, 
 bool CPUMode::metal_scatter(Ray& r_in, hit_record& rec, glm::vec4& attenuation, Ray& scattered, Triangle& tri) {
     glm::vec3 reflected = reflect(glm::normalize(r_in.direction), rec.normal);
     scattered.origin = rec.p;
-    scattered.direction = reflected;// +(sphere.fuzzAndmat_ptr.y * random_in_unit_sphere());
+    scattered.direction = reflected;
     attenuation = tri.albedo;
     return (glm::dot(scattered.direction, rec.normal) > 0);
 }
@@ -1208,9 +1053,7 @@ bool CPUMode::dielectric_scatter(
     Ray& r_in, hit_record& rec, glm::vec4& attenuation, Ray& scattered, Sphere& sphere
 ) {
     attenuation = glm::vec4(1.0, 1.0, 1.0, 1.0);
-    //float refraction_ratio = rec.front_face ? (1.0 / sphere.fuzzAndmat_ptr.x) : sphere.fuzzAndmat_ptr.x;
-    //float refraction_ratio = r_in.inLense ? (1.0f / global_refract_index) : global_refract_index;
-    float refraction_ratio;// = r_in.inLense ? (1.0f / global_refract_index) : global_refract_index;
+    float refraction_ratio;
    
 
 
@@ -1220,17 +1063,7 @@ bool CPUMode::dielectric_scatter(
     float sin_theta = sqrt(1.0 - cos_theta * cos_theta);
 
     glm::vec3 direction;
-    //direction = refract(unit_direction, rec.normal, float(refraction_ratio));
-    // checks wether the material can refrect or not
-   // if (refraction_ratio * sin_theta > 1.0 /* || reflectance(cos_theta, refraction_ratio) > random().y*/) {
-   //     direction = reflect(unit_direction, rec.normal);
-   // }
-   // else {
-   //     glm::vec3 ud_n = glm::normalize(unit_direction);
-   //     glm::vec3 n_n = glm::normalize(rec.normal);
-   //     direction = refract(ud_n, n_n, global_refract_index);
-   // }
-
+   
     switch (r_in.rgb)
     {
     case 0:
@@ -1247,15 +1080,11 @@ bool CPUMode::dielectric_scatter(
     default:
         refraction_ratio = 1.59;
         break;
-    }
-
-    
+    }    
 
     float ref_val = rec.front_face ? (1.0f / refraction_ratio) : refraction_ratio;
     direction = refract(unit_direction, normalize(rec.normal), float(ref_val));
-
-    //std::cout << "dir: " << glm::to_string(direction) << " in: " << glm::to_string(unit_direction) << " angle in: " << glm::degrees(glm::angle(unit_direction,glm::normalize(rec.normal))) << " angle out: " << glm::degrees(glm::angle(glm::normalize(rec.normal), direction)) << std::endl;
-
+    
     scattered = r_in;
     scattered.rgb = r_in.rgb;
     scattered.origin = rec.p;
@@ -1268,8 +1097,7 @@ bool CPUMode::dielectric_scatter(
     Ray& r_in, hit_record& rec, glm::vec4& attenuation, Ray& scattered, Triangle& tri
 ) {
     attenuation = glm::vec4(1.0, 1.0, 1.0, 1.0);
-
-    //float refraction_ratio = rec.front_face ? (1.0f / 1.59f) : ( 1.59f);
+    
     float refraction_ratio = rec.front_face ? (1.0f / global_refract_index) : ( global_refract_index);
     glm::vec3 normal = rec.front_face ? glm::normalize(rec.normal) : glm::normalize(-rec.normal);
     glm::vec3 unit_direction = glm::normalize(r_in.direction);
@@ -1278,16 +1106,7 @@ bool CPUMode::dielectric_scatter(
     float cos_theta = glm::min(glm::dot(-unit_direction, rec.normal), 1.0f);
     float sin_theta = sqrt(1.0 - cos_theta * cos_theta);
 
-    glm::vec3 direction;
-    //direction = refract(unit_direction, rec.normal, float(refraction_ratio));
-     //checks wether the material can refrect or not
-    //if (refraction_ratio * sin_theta > 1.0 /* || reflectance(cos_theta, refraction_ratio) > random().y*/) {
-    //    direction = glm::reflect(unit_direction, glm::normalize(rec.normal));
-    //}
-    //else {
-    //    direction = glm::refract(-unit_direction, glm::normalize(normal), float(refraction_ratio));
-    //    // direction = refract(normalize(unit_direction), normalize(rec.normal), float(refraction_ratio));
-    //}
+    glm::vec3 direction;    
 
     dataText << "Refract with index: " << refraction_ratio << " with direction: " << glm::to_string(unit_direction) << " at normal: " << glm::to_string(rec.normal);
 
@@ -1308,7 +1127,6 @@ bool CPUMode::dielectric_scatter(
         break;
     }
 
-    //direction = refract(unit_direction, normalize(rec.normal), float(refraction_ratio));
     direction = refract(unit_direction, normalize(rec.normal), float(refraction_ratio));
 
     dataText << " resulting in direction: " << glm::to_string(direction) << std::endl;
@@ -1316,11 +1134,8 @@ bool CPUMode::dielectric_scatter(
     scattered = r_in;
 
     scattered.origin = rec.p;
-    scattered.direction = direction;
-    
-    //std::cout << "origin " << glm::to_string(scattered.origin) << std::endl;
-    //std::cout << "direction " << glm::to_string(scattered.direction) << std::endl;
-
+    scattered.direction = direction;    
+   
     return true;
 }
 
@@ -1331,7 +1146,7 @@ glm::vec3 CPUMode::random_unit_vector() {
 
 glm::vec3 CPUMode::random_in_unit_sphere() {
 
-    //while (true) {
+   
     for (int i = 0; i < 100; i++) {
         glm::vec3 p = randomVec3(-1, 1);
         if ((glm::length(p) * length(p)) >= 1) continue;
@@ -1340,7 +1155,7 @@ glm::vec3 CPUMode::random_in_unit_sphere() {
 }
 
 glm::vec3 CPUMode::randomVec3(float min, float max) {
-    //return vec3(rand(min, max), rand(min, max), rand(min, max));
+    
     glm::uvec2 i = glm::uvec2(0,0);
     return random_pcg3d(glm::uvec3(i.x, i.y, 0));
 }
@@ -1415,12 +1230,12 @@ bool CPUMode::CheckDebugRayHit(std::vector<BeginEnd>& rayArr, Ray& r) {
 
 std::vector<BeginEnd> CPUMode::ComputeDebugRays(glm::vec3 imagePlanePos) {
 
-    int raysPerPixel = 6;// numPoints; // minimum teilen durch 4 oder mehr
+    int raysPerPixel = 6;
     bool shadow = false;
     float imageWidth = ProgramParams::windowWidth, imageHeight = ProgramParams::windowHeight;
     int div = 1;
-    float valX = 0.0f; //float(j / div);
-    float valY = 0.0f; //float(l / div);
+    float valX = 0.0f; 
+    float valY = 0.0f; 
     bool inLense = false;
     std::vector<BeginEnd> rayArr;
 
@@ -1443,9 +1258,8 @@ std::vector<BeginEnd> CPUMode::ComputeDebugRays(glm::vec3 imagePlanePos) {
                 camRay.direction = rayDir;
                 int depth = 5;
 
-
                 int hitCount = 0;
-                //BeginEnd rayArr[40];
+               
                 BeginEnd ray;
                 ray.p1 = camRay.origin;
                 ray.p2 = camRay.origin + glm::normalize(camRay.direction) * 200.0f;
@@ -1502,12 +1316,12 @@ std::ofstream CPUMode::OpenData() {
 
 bool CPUMode::drawColoredRays(Ray& r) {
 
-    int raysPerPixel = 6; numPoints;//vertArr.length()/ 50;// vertArr.length();// int(ceil(vertArr.length() / 20)); // minimum teilen durch 4 oder mehr
+    int raysPerPixel = 6; numPoints;
     bool shadow = false;
     float imageWidth = ProgramParams::windowWidth, imageHeight = ProgramParams::windowHeight;
     int div = 1;
-    double valX = 0.0f;//float(j / div);//for (int i = 0; i < (imageWidth / div); i++) {
-    double valY = 0.0f; //float(l / div);     //for (int j = 0; j < (imageHeight / div); j++) {
+    double valX = 0.0f;
+    double valY = 0.0f;
     bool inLense = false;
     bool no_shadow = false, reflect = false;   
     double partX = (imageWidth / 4)/ imageWidth;
@@ -1519,20 +1333,17 @@ bool CPUMode::drawColoredRays(Ray& r) {
 
     for (int col = 0; col < 3; col++) {
         valX = 0;
-        //for (int l = 0; l < div; l++) {        
+        
         for (int l = 0; valX <= 1.0; l++) {
             valY = 0.0;
-            //for (int j = 0; j < div; j++) {            
+                
             for (int j = 0; valY <= 1.0; j++) {
 
-                //for (int k = 0; k < raysPerPixel; k+=step) {
+               
                 for (int k = 0; k < raysPerPixel; k++) {
-                    // float sp = ( i * (imageWidth/ div)),
-                      //   tp = ( j * (imageHeight/ div));
+                   
                     Ray debugRay;
                     camera_get_debug_ray(0.5, 0.5, debugRay, k, true);
-                    //camera_get_debug_ray(valX, valY, debugRay, k, true);
-                    //vec3 rayDir = vec3((initlowerLeftCorner.xyz + (0.45+0.05*i * (100 / imageWidth)) * initHorizontal.xyz + ((0.45 + 0.05 * j * (100 / imageHeight)) * initVertical.xyz) - initCamPos.xyz).xyz);
                     glm::vec3 rayDir = debugRay.direction;
 
                     Ray camRay;
@@ -1569,65 +1380,27 @@ bool CPUMode::drawColoredRays(Ray& r) {
                             break;
                         }
 
-                        //if(k < 3)
-                        //    rayArr[i].numHits = 1;
-                        //else
-                        //    rayArr[i].numHits = 2;
-                        //
+                      
 
                         rayArr[i].numHits = i;
                     }
 
                     float t;
-                    // for (int i = 0; i <= hitCount; i++) {
-                    //     if (intersectionRayCylinder(r.origin, r.direction, rayArr[i].p1, rayArr[i].p2, .001f, t)) {
-                    //         r.color = glm::vec4(0.0f, 200.0f, 200.0f, 1.0f);
-                    //         if (rayArr[i].numHits == 1) {
-                    //             r.color = glm::vec4(.5f, 0.0f, .5f, 1.0f);
-                    //         }
-                    //         if (rayArr[i].numHits == 2) {
-                    //             r.color = glm::vec4(.5f,0.5f, 0.0f, 1.0f);
-                    //         }
-                    //         if (rayArr[i].numHits == 3) {
-                    //             r.color = glm::vec4(0.0f, 0.0f, .5f, 1.0f);
-                    //         }
-                    //         if (rayArr[i].numHits == 4) {
-                    //             r.color = glm::vec4(0.0f, .5f, .5f, 1.0f);
-                    //         }
-                    //         if (intersectionRayCylinder(r.origin, r.direction, rayArr[i].hit_normal_orig, (rayArr[i].hit_normal_orig + glm::normalize(rayArr[i].hit_normal_dir)), .005f, t)) {
-                    //             if (r.hit_normal_orig != glm::vec3(0.0f)) {
-                    //                 r.color = glm::vec4(200.0f, 0.0f, 0.0f, 1.0f);
-                    // 
-                    //                 return true;
-                    //             }
-                    //         }
-                    // 
-                    //         return true;
-                    //     }
-                    // }
-
-
+                    
 
                     // Normale
                     for (int i = 0; i <= hitCount; i++) {
                         if (intersectionRayCylinder(r.origin, r.direction, rayArr[i].hit_normal_orig, (rayArr[i].hit_normal_orig + (normalize(rayArr[i].hit_normal_dir) * 0.1f)), .002f, t)) {
-                            if (rayArr[i].hit_normal_orig != glm::vec3(0.0f)) {
-                                //std::cout << "rayArr[i].hit_normal_dir: " << glm::to_string(rayArr[i].hit_normal_dir) << " rayArr[i].hit_normal_orig: " << glm::to_string(rayArr[i].hit_normal_orig) << std::endl;
-
+                            if (rayArr[i].hit_normal_orig != glm::vec3(0.0f)) {                               
 
                                 if (rayArr[i].hit_normal_dir.x > 0.0f) {
-                                    r.color = glm::vec4(0.0f, 255.0f, 0.0f, 1.0f);
-                                    //std::cout << "green normal" << std::endl;
+                                    r.color = glm::vec4(0.0f, 255.0f, 0.0f, 1.0f);                                   
                                 }
                                 else {
                                     r.color = glm::vec4(255.0f, 0.0f, 0.0f, 1.0f);
-                                    //std::cout << "red normal" << std::endl;
+                                  
                                 }
-
-                                //r.color = glm::vec4(255.0f, 0.0f, 0.0f, 1.0f);
-
-                                //std::cout << std::endl << " normal origin: " << glm::to_string(rayArr[i].hit_normal_orig) << " normal direction: " << glm::to_string(rayArr[i].hit_normal_dir) << std::endl;
-
+                               
                                 dataText.close();
                                 return true;
                             }
@@ -1636,23 +1409,6 @@ bool CPUMode::drawColoredRays(Ray& r) {
 
                     for (int i = 0; i <= hitCount; i++) {
                         if (intersectionRayCylinder(r.origin, r.direction, rayArr[i].p1, rayArr[i].p2, .002f, t)) {
-
-                            // r.color = glm::vec4(0.0f, 255.0f, 255.0f, 1.0f);
-                            // if (rayArr[i].numHits == 1) {
-                            //     r.color = glm::vec4(255.0f, 0.0f, 255.0f, 1.0f);
-                            // }
-                            // else if (rayArr[i].numHits == 2) {
-                            //     r.color = glm::vec4(255.0f, 255.0f, 0.0f, 1.0f);
-                            // }
-                            // else if (rayArr[i].numHits == 3) {
-                            //     r.color = glm::vec4(0.0f, 0.0f, 255.0f, 1.0f);
-                            // }
-                            // else if (rayArr[i].numHits == 4) {
-                            //     r.color = glm::vec4(0.0f, 255.0f, 0.0f, 1.0f);
-                            // }
-                            // else if (rayArr[i].numHits == 5) {
-                            //     r.color = glm::vec4(0.0f, 255.0f, 255.0f, 1.0f);
-                            // }
 
                             if (rayArr[i].rgb == 0) {
                                 r.color = glm::vec4(255.0f, 0.0f, 0.0f, 1.0f);
@@ -1668,8 +1424,6 @@ bool CPUMode::drawColoredRays(Ray& r) {
                             return true;
                         }
                     }
-
-
 
                 }
                 valY += partY;

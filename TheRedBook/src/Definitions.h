@@ -7,17 +7,17 @@
 #define FRAGMENT_SHADER_PATH "..\\TheRedBook\\src\\ShaderCode\\fragment.shader.glsl"
 #define FRAGMENT_SHADER_PATH_ABSOLUT "J:/VisualStudioProjects/Raytracing/x64/TheRedBook/src/ShaderCode/fragment.shader.glsl"
 
-#define VERTEX_SHADER_PATH_CROSS "..\\TheRedBook\\src\\ShaderCode\\HUDvertex.shader.glsl"
-#define VERTEX_SHADER_PATH_CROSS_ABSOLUT "J:/VisualStudioProjects/Raytracing/x64/TheRedBook/src/ShaderCode/HUDvertex.shader.glsl"
+#define VERTEX_SHADER_PATH_RAYTRACE "..\\TheRedBook\\src\\ShaderCode\\raytrace_vertex.shader.glsl"
+#define VERTEX_SHADER_PATH_RAYTRACE_ABSOLUT "J:/VisualStudioProjects/Raytracing/x64/TheRedBook/src/ShaderCode/raytrace_vertex.shader.glsl"
 
-#define FRAGMENT_SHADER_PATH_CROSS "..\\TheRedBook\\src\\ShaderCode\\HUDfragment.shader.glsl"
-#define FRAGMENT_SHADER_PATH_CROSS_ABSOLUT "J:/VisualStudioProjects/Raytracing/x64/TheRedBook/src/ShaderCode/HUDfragment.shader.glsl"
+#define FRAGMENT_SHADER_PATH_RAYTRACE "..\\TheRedBook\\src\\ShaderCode\\raytrace_fragment.shader.glsl"
+#define FRAGMENT_SHADER_PATH_RAYTRACE_ABSOLUT "J:/VisualStudioProjects/Raytracing/x64/TheRedBook/src/ShaderCode/raytrace_fragment.shader.glsl"
 
 #define GLFW_WINDOW_MODE_NULL NULL
 #define GLFW_WINDOW_MODE_NULL_FULLSCREEN glfwGetPrimaryMonitor
 
 ////// Object Paths //////
-#define OBJECTPATH "J:/VisualStudioProjects/Raytracing/x64/TheRedBook/Resources/Objects/"
+#define OBJECTPATH "\\Resources\\Objects\\"
 
 ////// Shader //////
 #define HUD_FRAGMENT_SHADER "HUDFragmentShader"

@@ -51,7 +51,7 @@ void Renderer::RenderHUD(Shader shaderProgram) {
 
 	shaderProgram.Use();
 	int shaderID = shaderProgram.GetProgramID();
-	glm::vec3 view = camera->GetPosition() + camera->GetDirection();// camera->LookAt();
+	glm::vec3 view = camera->GetPosition() + camera->GetDirection();
 	glm::vec3 viewPos = camera->GetPosition();
 	glm::vec3 up = camera->GetUp();
 
@@ -98,14 +98,9 @@ void Renderer::RenderHUD(Shader shaderProgram) {
 
 		modelLoc = glGetUniformLocation(shaderID, "renderDepth");
 		glUniform1i(modelLoc, renderDepth);
-
-		//glm::vec3 transView = normalize(view) + glm::normalize(camera->GetDirection()) * lenseDistance;
+		
 		glm::vec3 transView = glm::vec3(0.0f,0.0f,0.0f) * glm::normalize(camera->GetDirection()) * lenseDistance;
-		//auto lenseTransform = glm::translate(glm::mat4(1.0f), transView) *glm::scale(glm::vec3(2.0f, 0.0f, 0.0f));// *glm::scale(glm::mat4(1.0f), glm::vec3(lenseSizeX, lenseSizeY, lenseSizeZ));
-		auto lenseTransform = camera->GetViewMat();// *glm::translate(camera->GetPosition());//// glm::scale(glm::vec3(1.0f, 1.0f, 1.0f));// *glm::scale(glm::mat4(1.0f), glm::vec3(lenseSizeX, lenseSizeY, lenseSizeZ));
-		//auto lenseTransform = glm::scale(glm::mat4(1.0f),glm::vec3(lenseSizeX,lenseSizeY,lenseSizeZ));
-
-		//auto lenseTransform = glm::translate(glm::mat4(1.0f), viewPos);
+		auto lenseTransform = camera->GetViewMat();
 
 		glm::vec4 posL = (camera->GetViewMat() * glm::vec4(0.0, 0.0, 0.0, 1.0));
 
@@ -145,11 +140,6 @@ void Renderer::RenderRayTrace(Shader shaderProgram) {
 
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER,RayTraceRenderQueue[i]);
 
-		//DrawObjectManager::UseDrawObject(RenderQueue[i].GetDrawObjectID());
-
-
-
-		//glDrawElements(GL_TRIANGLES, DrawObjectManager::GetCurrentBound().shapeData.indexSize, GL_UNSIGNED_INT, 0);
 	}
 }
 
@@ -256,7 +246,7 @@ GLuint Renderer::AppendToRenderQueue(GameObject& gameObject) {
 GLuint Renderer::AppendToRTRenderQueue(GLuint& gameObject) {
 
 	RayTraceRenderQueue.push_back(gameObject);
-	//RayTraceRenderQueue[RayTraceRenderQueue.size() - 1].SetObjectID(queueObjectID++);
+	
 	return queueObjectID;
 }
 
@@ -270,8 +260,6 @@ std::vector<GameObject> Renderer::GetRenderQueue() {
 }
 
 void Renderer::FlushQueue() {
-	//for (GameObject gameObject : RenderQueue)
-		//gameObject.GetBuffer().DeleteBuffer();
 
 	RenderQueue.clear();
 }
@@ -286,15 +274,11 @@ void Renderer::FlushQueueWithVAO() {
 }
 
 void Renderer::FlushRTQueue() {
-	//for (GameObject gameObject : HUDRenderQueue)
-		//gameObject.GetBuffer().DeleteBuffer();
 
 	RayTraceRenderQueue.clear();
 }
 
 void Renderer::FlushHUDQueue() {
-	//for (GameObject gameObject : HUDRenderQueue)
-		//gameObject.GetBuffer().DeleteBuffer();
 
 	HUDRenderQueue.clear();
 }

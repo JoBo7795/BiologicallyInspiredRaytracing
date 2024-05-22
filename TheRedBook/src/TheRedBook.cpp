@@ -58,7 +58,6 @@ int main(int argc, char* argv[])
 	GameObject Canvas = ObjectCreator::Generate2DSquare();
 
 	Renderer::AppendToHUDRenderQueue(Canvas);
-
 	
 	if (ProgramParams::picOnly) {
 		
@@ -80,7 +79,6 @@ int main(int argc, char* argv[])
 	}
 
 	ProgramParams::window.DeleteWindow();
-	system("Pause");
 	
 	return 0;
 }

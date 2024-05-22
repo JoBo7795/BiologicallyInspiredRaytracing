@@ -153,8 +153,8 @@ public:
 		};
 
 		std::vector<ShaderInfo> shaderInfo2 = {
-			{GL_VERTEX_SHADER, VERTEX_SHADER_PATH_CROSS, NULL },
-			{GL_FRAGMENT_SHADER, FRAGMENT_SHADER_PATH_CROSS, NULL}
+			{GL_VERTEX_SHADER, VERTEX_SHADER_PATH_RAYTRACE, NULL },
+			{GL_FRAGMENT_SHADER, FRAGMENT_SHADER_PATH_RAYTRACE, NULL}
 		};
 
 		shaderProgram1 = CreateShader::GenerateShader(shaderInfo1);

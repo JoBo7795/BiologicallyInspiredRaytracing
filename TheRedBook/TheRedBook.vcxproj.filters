@@ -300,8 +300,8 @@
   <ItemGroup>
     <None Include="src\ShaderCode\fragment.shader.glsl" />
     <None Include="src\ShaderCode\fragmentInstanced.shader.glsl" />
-    <None Include="src\ShaderCode\HUDfragment.shader.glsl" />
-    <None Include="src\ShaderCode\HUDvertex.shader.glsl" />
+    <None Include="src\ShaderCode\raytrace_fragment.shader.glsl" />
+    <None Include="src\ShaderCode\raytrace_vertex.shader.glsl" />
     <None Include="src\ShaderCode\vertex.shader.glsl" />
     <None Include="src\ShaderCode\vertexInstanced.shader.glsl" />
   </ItemGroup>

@@ -87,12 +87,10 @@ void RealtimeMode::Render() {
 		ProgramParams::f = lens.calcF();
 		ProgramParams::dpt = lens.calcOneByF();
 
-		//cam->SetDirection(glm::vec3(-1.0f, 0.0f, 0.0f));
 		pos = cam->GetPosition();
 
 		ImGui::Begin("Player Position");
 		ImGui::InputFloat("X: ", &pos.x, .005f, 1.0f);
-		//ImGui::SliderFloat("X: ", &pos.x,-100, 100.0f);
 		ImGui::InputFloat("Y: ", &pos.y, .05f, 1.0f);
 		ImGui::InputFloat("Z: ", &pos.z, .05f, 1.0f);
 
@@ -100,14 +98,12 @@ void RealtimeMode::Render() {
 		ImGui::Text(glm::to_string(currentMouseDirection).c_str());
 		ImGui::End();
 
-		ImGui::Begin("Refraction");
-		//ImGui::Text("Index(G):");
+		ImGui::Begin("Refraction");		
 		ImGui::Text(std::to_string(Renderer::global_refract_index).c_str());
-		//ImGui::Text(glm::to_string(imagePlaneDir).c_str());
 		ImGui::InputFloat("Index(G): ", &Renderer::global_refract_index, .05f, 1.0f);
 		ImGui::SliderFloat("Lense Distance ", &Renderer::lenseDistance, 0.0f, 3000.0f);
 		ImGui::SliderFloat("Lense SizeX ", &Renderer::lenseSizeX, 0.0f, 3.0f);
-		//ImGui::InputFloat("Lense SizeX ", &Renderer::lenseSizeX, 0.0f, 200.0f);
+		
 		ImGui::SliderFloat("Lense SizeY ", &Renderer::lenseSizeY, 0.0f, 100.0f);
 		ImGui::SliderFloat("Lense SizeZ ", &Renderer::lenseSizeZ, 0.0f, 100.0f);
 		ImGui::SliderFloat("Retinal Image FormX", &Renderer::factXY.x, -100.0f, 100.0f);
@@ -122,21 +118,15 @@ void RealtimeMode::Render() {
 		ProgramParams::g = 14.0;
 		ProgramParams::calcImageDist();
 
-		//cam->SetPosition(pos);
-		//cam->SetPosition(imagePlanePos);
 
 		
-		Renderer::lensPos = cam->GetPosition();// (lens.lensOrigin + glm::normalize(lens.lensOriginLeft) * glm::vec3(ProgramParams::b));
+		Renderer::lensPos = cam->GetPosition();
 		cam->SetPosition(lens.lensOrigin + glm::normalize(lens.lensOriginLeft) * glm::vec3(ProgramParams::b));
 		if (cam->updateData)
 			cam->Update();
 		if (first) {
 			cam->SetDirection(glm::vec3(1.0f, 0.0f, 0.0f));
-			//cam->SetDirection(imagePlaneDir);
-
-			// Activate to debug
-			//cam->SetPosition(imagePlanePos);
-
+			
 			cam->Update();
 			Renderer::initHorizontal = cam->horizontal;
 			Renderer::initVertical = cam->vertical;
@@ -147,7 +137,7 @@ void RealtimeMode::Render() {
 			// Activate to debug
 			//cam->SetDirection(imagePlaneDir);
 
-			//cam->SetPosition(glm::vec3(170.0f, 0.0f, -200.0f));
+			
 			cam->Update();
 
 		}

@@ -62,25 +62,13 @@ void PictureMode::Render() {
 
 	bool first = true;
 
-	// ProgramParams::g = 3.0;
-	// calcImageDist();
-	// 
-	// if (ProgramParams::debugMode) {
-	// 
-	// 	debugCam.SetPosition(glm::vec3(-ProgramParams::b, ProgramParams::posY, ProgramParams::posZ));
-	// 	initlowerLeftCorner.x += 1.0;
-	// 
-	// }
-	//ProgramParams::g = 5.0;
 	lens = LensData(glm::vec3(0.0, 0.0, 0.0));
 	ProgramParams::f = lens.calcF();
-	ProgramParams::dpt = lens.calcOneByF();
-	
+	ProgramParams::dpt = lens.calcOneByF();	
 
 	auto sphereQueue = DrawObjectManager::GetSphereQueue();
 	glm::vec3 rayPos = cam->GetPosition();
-	//rayPos.x += 1.0;
-
+	
 	rayPos = glm::vec3(0.0, 0.0, 0.0);
 
 	double closestSoFar = infinity;
@@ -94,9 +82,7 @@ void PictureMode::Render() {
 			dist = glm::length(glm::vec3(sphere.position - rayPos));
 		}
 	}
-
-
-	
+			
 
 	if(dist > 1.0)
 		ProgramParams::g = dist;
@@ -105,25 +91,14 @@ void PictureMode::Render() {
 
 	ProgramParams::calcImageDist();
 
-
-	//std::cout << lens.d << " " << lens.calcD() << std::endl;
-	//lens.d = lens.calcD();
-	//
-	//lens.dTolensRad();
-	//
-	//ProgramParams::f = lens.calcF();
-	//ProgramParams::dpt = lens.calcOneByF();
-	//
-	//ProgramParams::calcImageDist();
-
 	Renderer::sceneBrightness = ProgramParams::sceneBrightness/100;
 
 	if (debugMode) {
-		 //SetDebugParams(glm::vec3(ProgramParams::b, 0.0, 0.0), glm::vec3(1.0, 0.0, 0.0));
+
 		 SetDebugParams(glm::vec3(0.0, 0.0, 0.0), glm::vec3(1.0, 0.0, 0.0));
 
 		 lens.lensOrigin = debugCam.GetPosition();
-		 Renderer::lensPos = lens.lensOrigin; // (lens.lensOrigin + glm::normalize(lens.lensOriginLeft) * glm::vec3(ProgramParams::b));
+		 Renderer::lensPos = lens.lensOrigin;
 		 debugCam.SetPosition(lens.lensOrigin + glm::normalize(lens.lensOriginLeft) * glm::vec3(ProgramParams::b));
 		 debugCam.Update();
 
@@ -135,22 +110,20 @@ void PictureMode::Render() {
 		lens.lensOrigin = debugCam.GetPosition();
 		Renderer::lensPos = lens.lensOrigin;
 		cam->SetPosition(lens.lensOrigin + glm::normalize(lens.lensOriginLeft) * glm::vec3(ProgramParams::b));
-		cam->Update();
-		//cam->SetPosition(glm::vec3(-ProgramParams::b, 0.0, 0.0));
+		cam->Update();	
 
 	}
 		
 
 	for (int i = 0; i < numLoops; i++) {
 		for (int j = 0; j < numLoops; j++) {
-			//cam->SetDirection(glm::vec3(1.0f, 0.0f, 0.0f));
+			
 			if (ShaderManager::GetRegisteredShader(ProgramParams::shaderName, ProgramParams::tmpFragmentHUD))
 				ProgramParams::FragmentHUD = ProgramParams::tmpFragmentHUD;			
 
 			if (cam->updateData)
 				cam->Update();
-
-			//auto currentMouseDirection = cam->GetPosition() + cam->GetDirection();
+					
 
 			glScissor(i * stepX, j * stepY, stepX, stepY);
 

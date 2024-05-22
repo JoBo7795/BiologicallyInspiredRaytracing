@@ -39,8 +39,8 @@ void InputControl::processInput(GLFWwindow* window, Player* player)
 	if (glfwGetKey(window, GLFW_KEY_F5) == GLFW_PRESS &&ffReleased) {
 
 		std::vector<ShaderInfo> shaderInfo2 = {
-			{GL_VERTEX_SHADER, VERTEX_SHADER_PATH_CROSS, NULL },
-			{GL_FRAGMENT_SHADER, FRAGMENT_SHADER_PATH_CROSS, NULL}
+			{GL_VERTEX_SHADER, VERTEX_SHADER_PATH_RAYTRACE, NULL },
+			{GL_FRAGMENT_SHADER, FRAGMENT_SHADER_PATH_RAYTRACE, NULL}
 		};
 
 		std::string shaderName = std::string(HUD_FRAGMENT_SHADER);
