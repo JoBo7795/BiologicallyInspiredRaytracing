@@ -23,8 +23,8 @@ void DataWriter::WriteToProgramPathFile() {
 
 	if(ProgramParams::CPURender){
 		//stbi_write_jpg("C:\\Users\\Johannes\\Desktop\\Renderings\\raytrace24.jpg", ProgramParams::windowWidth, ProgramParams::windowHeight, CHANNEL_NUM, CPUMode::pixels, 100);
-		stbi_write_jpg(finalPath, ProgramParams::windowWidth, ProgramParams::windowHeight, CHANNEL_NUM, CPUMode::pixels, 100);
-		//ProgramParams::window.saveImageCPU((char*)finalPath, CPUMode::pixels);
+		//stbi_write_jpg(finalPath, ProgramParams::windowWidth, ProgramParams::windowHeight, CHANNEL_NUM, CPUMode::pixels, 100);
+		ProgramParams::window.saveImageCPU((char*)finalPath, CPUMode::pixels);
 	}
 	else {
 		ProgramParams::window.saveImage((char*)finalPath, ProgramParams::window.GetWindowRef());

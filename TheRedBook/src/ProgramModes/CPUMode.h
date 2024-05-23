@@ -86,13 +86,13 @@ public:
     static void SetDebugParams(glm::vec3 in_imagePlanePos, glm::vec3 in_imagePlaneDir);
 
     static glm::vec4 ray_color(Ray& r, int depth);
-    static bool camera_get_ray(float s, float t, Ray& ray, int o, bool lp);
+    static bool CameraGetRay(float s, float t, Ray& ray, int o, bool lp);
     static bool camera_get_debug_ray(float s, float t, Ray& ray, int o, bool lp);
     static glm::vec4 ray_color2(Ray& r, bool& hit, bool& no_reflect, bool& no_shadow);
-    static bool world_hit(float t_min, Ray& r, float t_max, hit_record& rec);
+    static bool WorldHit(float t_min, Ray& r, float t_max, hit_record& rec);
     static glm::vec3 ray_at(glm::vec3 origin, glm::vec3 direction, float t);
     static glm::vec3 refract_s(glm::vec3& uv, glm::vec3 n, float etai_over_etat);
-    static bool sphere_hit(float t_min, Ray& r, float t_max, hit_record& rec, Sphere& sphere);
+    static bool SphereHit(float t_min, Ray& r, float t_max, hit_record& rec, Sphere& sphere);
     static bool check_front_face(const Ray r, const glm::vec3 outward_normal);
     static glm::vec3 set_face_normal(const Ray r, const glm::vec3 outward_normal);
     static bool RayTriangleIntersect(Ray r, hit_record& rec, float t_min, float t_max, Triangle tri, glm::vec3& outIntersectionPoint);
@@ -103,11 +103,11 @@ public:
     static bool plain_color(Ray& r_in, hit_record& rec, glm::vec4& attenuation, Ray& scattered, Triangle& tri);
     static bool metal_scatter(Ray& r_in, hit_record& rec, glm::vec4& attenuation, Ray& scattered, Sphere& sphere);
     static bool metal_scatter(Ray& r_in, hit_record& rec, glm::vec4& attenuation, Ray& scattered, Triangle& tri);
-    static bool dielectric_scatter(Ray& r_in, hit_record& rec, glm::vec4& attenuation, Ray& scattered, Sphere& sphere);
-    static bool dielectric_scatter(Ray& r_in, hit_record& rec, glm::vec4& attenuation, Ray& scattered, Triangle& tri);
+    static bool DielectricScatter(Ray& r_in, hit_record& rec, glm::vec4& attenuation, Ray& scattered, Sphere& sphere);
+    static bool DielectricScatter(Ray& r_in, hit_record& rec, glm::vec4& attenuation, Ray& scattered, Triangle& tri);
 
-    static bool intersectRaySphere(glm::vec3 rayOrigin, glm::vec3 rayDirection, glm::vec3 sphereOrigin, double sphereRadius, glm::vec3& iPoint, double& t);
-    static bool intersectRayLens(glm::vec3 rayOrigin, glm::vec3 rayDirection, LensData lens, glm::vec3& normal, double& t, bool inLense);
+    static bool IntersectRaySphere(glm::vec3 rayOrigin, glm::vec3 rayDirection, glm::vec3 sphereOrigin, double sphereRadius, glm::vec3& iPoint, double& t);
+    static bool IntersectRayLens(glm::vec3 rayOrigin, glm::vec3 rayDirection, LensData lens, glm::vec3& normal, double& t, bool inLense);
 
     static glm::vec3 random_unit_vector();
     static glm::vec3 random_in_unit_sphere();

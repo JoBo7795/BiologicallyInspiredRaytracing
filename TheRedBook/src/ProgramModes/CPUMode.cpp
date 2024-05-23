@@ -187,7 +187,7 @@ void CPUMode::Render() {
             
             if (ProgramParams::debugMode) {
 
-                camera_get_ray(u, v, r, 0, false);
+                CameraGetRay(u, v, r, 0, false);
 
                 pixel_color += glm::normalize(glm::vec3(ray_color(r, depth)));
 
@@ -216,7 +216,7 @@ void CPUMode::Render() {
                 float accBrightness = 0.0;
                 
                 for (int i = 0; i < numPoints; i++) {
-                    camera_get_ray(u, v, r, i, true);
+                    CameraGetRay(u, v, r, i, true);
                     Ray initRay;
                     for (int colorCounter = 0; colorCounter < 3; colorCounter++) {
                         initRay = r;
@@ -319,34 +319,34 @@ struct Disc {
 };
 
 bool doesRayIntersectDisc(Ray ray, Disc disc) {
-    // Berechnen Sie das Skalarprodukt der Richtung des Strahls mit der Normalen der Scheibe
+
     double dotProduct = ray.direction.x * disc.normal.x + ray.direction.y * disc.normal.y + ray.direction.z * disc.normal.z;
 
-    // Wenn das Skalarprodukt null ist, sind der Strahl und die Scheibe parallel und schneiden sich nicht
+    // if dot product is 0 ray and disc are parallel and don't intersect
     if (dotProduct == 0) {
         return false;
     }
 
-    // Berechnen Sie den Vektor vom Ursprung des Strahls zum Ursprung der Scheibe
+    // vector from ray origin to disc origin
     glm::vec3 originToDisc = { disc.origin.x - ray.origin.x, disc.origin.y - ray.origin.y, disc.origin.z - ray.origin.z };
 
-    // Berechnen Sie den Abstand entlang des Strahls vom Ursprung des Strahls zum Schnittpunkt mit der Scheibe
+    // distance of ray and disc origin
     double t = (originToDisc.x * disc.normal.x + originToDisc.y * disc.normal.y + originToDisc.z * disc.normal.z) / dotProduct;
 
-    // Wenn t negativ ist, liegt der Schnittpunkt hinter dem Ursprung des Strahls
+    // if t negative, disc is behind camera
     if (t < 0) {
         return false;
     }
 
-    // Berechnen Sie die Koordinaten des Schnittpunkts
+    // calculate intersection point
     glm::vec3 intersection = { ray.origin.x + t * ray.direction.x, ray.origin.y + t * ray.direction.y, ray.origin.z + t * ray.direction.z };
 
-    // Berechnen Sie den quadratischen Abstand vom Ursprung der Scheibe zum Schnittpunkt
+
     double distanceSquared = (intersection.x - disc.origin.x) * (intersection.x - disc.origin.x) +
         (intersection.y - disc.origin.y) * (intersection.y - disc.origin.y) +
         (intersection.z - disc.origin.z) * (intersection.z - disc.origin.z);
 
-    // Wenn der quadratische Abstand größer ist als der quadratische Radius der Scheibe, liegt der Schnittpunkt außerhalb der Scheibe
+    // if distance squared bigger than quadratic radius of disc, intersection located outside of disc
     if (distanceSquared > (disc.radius * disc.radius)) {
         return true;
     }
@@ -355,7 +355,7 @@ bool doesRayIntersectDisc(Ray ray, Disc disc) {
 }
 
 
-bool CPUMode::world_hit(float t_min, Ray& r, float t_max, hit_record& rec) {
+bool CPUMode::WorldHit(float t_min, Ray& r, float t_max, hit_record& rec) {
 
     Disc iris;
     iris.origin = glm::vec3(0.0);
@@ -377,7 +377,7 @@ bool CPUMode::world_hit(float t_min, Ray& r, float t_max, hit_record& rec) {
     glm::vec3 p;
     auto sphereQueue = DrawObjectManager::GetSphereQueue();
     for (int i = 0; i < DrawObjectManager::GetSphereQueue().size(); i++) {
-        if (sphere_hit(t_min, r, closest_so_far, temp_rec, DrawObjectManager::GetSphereQueue()[i])) {
+        if (SphereHit(t_min, r, closest_so_far, temp_rec, DrawObjectManager::GetSphereQueue()[i])) {
             hit_anything = true;
             closest_so_far = temp_rec.t;
             rec = temp_rec;
@@ -395,7 +395,7 @@ bool CPUMode::world_hit(float t_min, Ray& r, float t_max, hit_record& rec) {
     glm::vec3 ellipsoidRadii = glm::vec3(x, y, z);
 
 
-     if (intersectRayLens(r.origin, r.direction, lens, normal_out, t, r.inLense)) {
+     if (IntersectRayLens(r.origin, r.direction, lens, normal_out, t, r.inLense)) {
           if (closest_so_far > t) {
               hit_anything = true;
               rec = temp_rec;
@@ -599,7 +599,7 @@ bool CPUMode::RayTriangleIntersect(
 }
 
 
-bool CPUMode::intersectRaySphere(glm::vec3 rayOrigin, glm::vec3 rayDirection, glm::vec3 sphereOrigin, double sphereRadius, glm::vec3& iPoint, double& t) {
+bool CPUMode::IntersectRaySphere(glm::vec3 rayOrigin, glm::vec3 rayDirection, glm::vec3 sphereOrigin, double sphereRadius, glm::vec3& iPoint, double& t) {
     glm::vec3 oc = rayOrigin - sphereOrigin;
     double a = glm::dot(rayDirection, rayDirection);
     double b = 2.0 * glm::dot(oc, rayDirection);
@@ -633,14 +633,14 @@ bool CPUMode::intersectRaySphere(glm::vec3 rayOrigin, glm::vec3 rayDirection, gl
 
 
 
-bool CPUMode::intersectRayLens(glm::vec3 rayOrigin, glm::vec3 rayDirection, LensData lens, glm::vec3& normal, double& t, bool inLense) {
+bool CPUMode::IntersectRayLens(glm::vec3 rayOrigin, glm::vec3 rayDirection, LensData lens, glm::vec3& normal, double& t, bool inLense) {
    
     glm::vec3 intersection1;
     glm::vec3 intersection2;
     double t1 = 0.0, t2 = 0.0;
 
-    bool inter1 = intersectRaySphere(rayOrigin, normalize(rayDirection), lens.lensOriginLeft, lens.lensRadiusLeft, intersection1,t1);
-    bool inter2 = intersectRaySphere(rayOrigin, normalize(rayDirection), lens.lensOriginRight, lens.lensRadiusRight, intersection2,t2);
+    bool inter1 = IntersectRaySphere(rayOrigin, normalize(rayDirection), lens.lensOriginLeft, lens.lensRadiusLeft, intersection1,t1);
+    bool inter2 = IntersectRaySphere(rayOrigin, normalize(rayDirection), lens.lensOriginRight, lens.lensRadiusRight, intersection2,t2);
 
     auto angle1 = glm::degrees(glm::acos(glm::dot(glm::normalize((lens.lensOrigin - lens.lensOriginRight)), glm::normalize(lens.lensOrigin - intersection1))));
     auto angle2 = glm::degrees(glm::acos(glm::dot(glm::normalize((lens.lensOrigin - lens.lensOriginLeft)), glm::normalize(lens.lensOrigin - intersection2))));    
@@ -673,7 +673,7 @@ glm::vec4 CPUMode::ray_color2(Ray& r, bool& hit, bool& no_reflect, bool& no_shad
     Ray scattered;
     glm::vec4 attenuation;
 
-    if (world_hit(0.01f, r, infinity, rec)) {
+    if (WorldHit(0.01f, r, infinity, rec)) {
 
         if (rec.geoType == SPHERE) {
 
@@ -695,7 +695,7 @@ glm::vec4 CPUMode::ray_color2(Ray& r, bool& hit, bool& no_reflect, bool& no_shad
                 break;
 
             case int(DIELECTRIC):
-                if (dielectric_scatter(r, rec, attenuation, scattered, DrawObjectManager::GetSphereQueue()[rec.arrIndex])) {
+                if (DielectricScatter(r, rec, attenuation, scattered, DrawObjectManager::GetSphereQueue()[rec.arrIndex])) {
 
                     hit = true;
 
@@ -748,7 +748,7 @@ glm::vec4 CPUMode::ray_color2(Ray& r, bool& hit, bool& no_reflect, bool& no_shad
             sphere.color = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
             sphere.albedo = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
 
-            if (dielectric_scatter(r, rec, attenuation, scattered, sphere)) {
+            if (DielectricScatter(r, rec, attenuation, scattered, sphere)) {
 
                 hit = true;
 
@@ -786,7 +786,7 @@ glm::vec4 CPUMode::ray_color2(Ray& r, bool& hit, bool& no_reflect, bool& no_shad
                 break;
 
             case int(DIELECTRIC):
-                if (dielectric_scatter(r, rec, attenuation, scattered, rec.tri)) {
+                if (DielectricScatter(r, rec, attenuation, scattered, rec.tri)) {
 
                     hit = true;                  
 
@@ -878,7 +878,7 @@ glm::vec4 CPUMode::ray_color(Ray& r, int depth) {
 }
 
 
-bool CPUMode::camera_get_ray(float s, float t, Ray& ray, int o, bool lp) {
+bool CPUMode::CameraGetRay(float s, float t, Ray& ray, int o, bool lp) {
 
     if (lp) {
 
@@ -949,7 +949,7 @@ glm::vec3 CPUMode::set_face_normal(const Ray r, const glm::vec3 outward_normal) 
     return (check_front_face(r, outward_normal) ? outward_normal : -outward_normal);
 }
 
-bool CPUMode::sphere_hit(float t_min, Ray& r, float t_max, hit_record& rec, Sphere& sphere) {
+bool CPUMode::SphereHit(float t_min, Ray& r, float t_max, hit_record& rec, Sphere& sphere) {
 
     glm::vec3 oc = r.origin - sphere.position;
     float a = length(r.direction) * length(r.direction);
@@ -1049,7 +1049,7 @@ bool CPUMode::metal_scatter(Ray& r_in, hit_record& rec, glm::vec4& attenuation, 
 }
 
 
-bool CPUMode::dielectric_scatter(
+bool CPUMode::DielectricScatter(
     Ray& r_in, hit_record& rec, glm::vec4& attenuation, Ray& scattered, Sphere& sphere
 ) {
     attenuation = glm::vec4(1.0, 1.0, 1.0, 1.0);
@@ -1093,7 +1093,7 @@ bool CPUMode::dielectric_scatter(
     return true;
 }
 
-bool CPUMode::dielectric_scatter(
+bool CPUMode::DielectricScatter(
     Ray& r_in, hit_record& rec, glm::vec4& attenuation, Ray& scattered, Triangle& tri
 ) {
     attenuation = glm::vec4(1.0, 1.0, 1.0, 1.0);

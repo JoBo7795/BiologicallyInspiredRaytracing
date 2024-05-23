@@ -36,6 +36,8 @@ public:
 		stride += (stride % 4) ? (4 - stride % 4) : 0;
 		GLsizei bufferSize = stride * height;
 		std::vector<char> buffer(bufferSize);
+
+		// read pixel from gpu
 		glPixelStorei(GL_PACK_ALIGNMENT, 4);
 		glReadBuffer(GL_FRONT);
 		glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, buffer.data());
@@ -58,7 +60,6 @@ public:
 	}
 
 	inline void saveImageCPU(char* filepath, uint8_t* data) {
-		//int width, height;
 		
 		GLsizei nrChannels = 3;
 		GLsizei stride = nrChannels * width;

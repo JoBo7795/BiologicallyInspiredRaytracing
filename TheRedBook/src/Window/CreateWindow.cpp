@@ -16,6 +16,9 @@ Window CreateWindow::CreateWindow(float windowWidth,float windowHeight) {
 		glfwTerminate();
 	}
 
+	windowObject.SetWidth(windowWidth);
+	windowObject.SetHeigth(windowHeight);
+
 	glfwMakeContextCurrent(windowObject.GetWindowRef());	
 	glViewport(0, 0, windowWidth, windowHeight);
 

@@ -3,10 +3,8 @@
 
 #include <iostream>
 #include <vector>
-
 #include <time.h>  
 #include <array>
-
 #include <string>
 #include <chrono>
 #include <iomanip>
@@ -24,7 +22,6 @@
 #include "Texture/CreateTexture.h"
 #include "Shader/ShaderManager.h"
 #include "Definitions.h"
-
 #include "ProgramModes/ProgramParams.h"
 #include "ProgramModes/PictureMode.h"
 #include "ProgramModes/RealtimeMode.h"
@@ -47,6 +44,7 @@ int main(int argc, char* argv[])
 
 	Scene::SceneDescription();
 	
+	// Serialize scene to ssbo for raytracing on gpu
 	ObjectCreator::SerializeToSSBO(DrawObjectManager::GetSphereQueue());
 
 	for (GameObject& go : GameObjectManager::GetGameObjectList()) {
@@ -79,6 +77,7 @@ int main(int argc, char* argv[])
 	}
 
 	ProgramParams::window.DeleteWindow();
-	
+	system("Pause");
+
 	return 0;
 }

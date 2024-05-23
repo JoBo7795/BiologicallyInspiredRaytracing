@@ -8,6 +8,8 @@ std::vector<GameObject> Renderer::HUDRenderQueue;
 std::vector<GLuint> Renderer::RayTraceRenderQueue;
 GLfloat Renderer::lastFrame = 0.0f, Renderer::deltaTime = 0.0f;
 
+// TODO Need to refactor class
+
 int Renderer::r_translationModelLoc;
 int Renderer::r_rotationModelLoc;
 int Renderer::r_scaleModelLoc;

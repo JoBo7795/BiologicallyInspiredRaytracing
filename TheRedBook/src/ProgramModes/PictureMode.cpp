@@ -24,7 +24,7 @@ void PictureMode::InitPictureMode(float in_lenseDistance, bool in_renderImageOnl
 
 	imageWidth = ProgramParams::windowWidth;
 	imageHeight = ProgramParams::windowHeight;
-	numRenders = 10000;
+	numRenders = 10000; // number of tiles per picture
 	numLoops = sqrt(numRenders);
 	stepX = imageWidth / numLoops;
 	stepY = imageHeight / numLoops;
@@ -56,9 +56,9 @@ void PictureMode::Render() {
 	glEnable(GL_SCISSOR_TEST);
 
 
-	std::chrono::time_point<std::chrono::high_resolution_clock> start = std::chrono::high_resolution_clock::now(), current, end;
+	std::chrono::time_point<std::chrono::high_resolution_clock> start, current, end;
 	std::chrono::milliseconds duration,elapsed;
-	int64_t hours, minutes, seconds,durationG;
+	int64_t hours, minutes, seconds,gHours, gMinutes, gSeconds, gDuration;
 
 	bool first = true;
 
@@ -113,8 +113,9 @@ void PictureMode::Render() {
 		cam->Update();	
 
 	}
-		
-
+	int nextProg = 10;
+	start = std::chrono::high_resolution_clock::now();
+	std::cout << std::flush << "rendering progress: " << std::setprecision(2) << static_cast<float>(0) * 100 << "%" << std::endl;
 	for (int i = 0; i < numLoops; i++) {
 		for (int j = 0; j < numLoops; j++) {
 			
@@ -133,23 +134,26 @@ void PictureMode::Render() {
 			Renderer::RenderHUD(ProgramParams::FragmentHUD);
 
 			double progress = static_cast<double>(i * numLoops + j) / numRenders;
-			std::cout << "rendering progress: " << std::setprecision(2) << progress * 100 << "%" << std::endl;
-			
-			if (progress < 0.01 && first) {
+
+
+			if (progress > 0.01 && first) {
 				end = std::chrono::high_resolution_clock::now();
 				duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-				durationG = duration.count()* numRenders;
+				gDuration = duration.count()* 100;
 
-				hours = durationG / 3600000;
-				durationG -= hours;
-				minutes = durationG / 60000;
-				durationG -= minutes;
-				seconds = durationG / 1000;
+				gHours = gDuration / 3600000;
+				gDuration -= gHours * 3600000;
+				gMinutes = gDuration / 60000;
+				gDuration -= gMinutes * 60000;
+				gSeconds = gDuration / 1000;
+
 				first = false;
-			}
-			else {
 
-				std::cout << "Guessed time " << hours << ":" << minutes << ":" << seconds << "." << std::endl;
+				std::cout << std::flush << "rendering progress: " << std::setprecision(2) << static_cast<float>(progress) * 100 << "%" << std::endl << std::endl;
+				std::cout << "Guessed time " << gHours << ":" << gMinutes << ":" << gSeconds << "." << std::endl;
+				
+			}
+			else if (!first){				
 
 				current = std::chrono::high_resolution_clock::now();
 				elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(current - start);
@@ -160,11 +164,17 @@ void PictureMode::Render() {
 				elapsed -= std::chrono::minutes(minutes);
 				seconds = elapsed.count() / 1000;
 
-				std::cout << "Elapsed time: " << hours << ":" << minutes << ":" << seconds << "." << std::flush;
+				float calc = std::round((std::fmod(static_cast<float>(progress * 100) , nextProg)));
+				if ( calc == 0) {
+					std::cout << std::flush << "rendering progress: " << std::setprecision(2) << static_cast<float>(progress) * 100 << "%" << std::endl;
+					std::cout << "Elapsed time: " << hours << ":" << minutes << ":" << seconds << "." << std::endl << std::endl;
+					nextProg += 10;
+				}
 
 			}
 
 
 		}
 	}
+	
 }
