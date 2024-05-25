@@ -13,19 +13,26 @@ class RealtimeMode
 {
 public:
 
-	static glm::vec3 imagePlanePos, imagePlaneDir;
-	static bool debugMode;
-	static Camera* cam, debugCam;
-	static LensData lens;
 
-	static int imageWidth;
-	static int imageHeight;
+	int imageWidth;
+	int imageHeight;
 
-	static void InitPictureMode(float in_lenseDistance, bool in_debugMode, int in_rDepth = 4);
-	static void SetDebugParams(glm::vec3 in_imagePlanePos, glm::vec3 in_imagePlaneDir);
-	static void SetCameraParams(glm::vec3 in_imagePlanePos, glm::vec3 in_imagePlaneDir);
-	static void Render();
+	void InitPictureMode(float in_lenseDistance, bool in_debugMode, int in_rDepth = 4);
+	void SetDebugParams(glm::vec3 in_imagePlanePos, glm::vec3 in_imagePlaneDir);
+	void SetCameraParams(glm::vec3 in_imagePlanePos, glm::vec3 in_imagePlaneDir);
+	void Render();
 
+	static RealtimeMode* GetInstance();
+	
+private:
+
+	static RealtimeMode* instance;
+	glm::vec3 imagePlanePos, imagePlaneDir;
+	bool debugMode;
+	Camera* cam, debugCam;
+	LensData lens;
+	Renderer* rendererInstanceRef;
+	RealtimeMode();
 
 
 };

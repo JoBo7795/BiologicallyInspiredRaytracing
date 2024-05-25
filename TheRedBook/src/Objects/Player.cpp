@@ -86,25 +86,25 @@ void Player::HandleJump() {
 }
 
 bool Player::MoveForwardPossible() {
-	BoundBox clickPoint = ObjectCreator::GenerateClickPoint(playerCamera->GetPosition() + (0.2f * glm::vec3(playerCamera->GetDirection().x, 0.0f, Renderer::GetCamera()->GetDirection().z)));
+	BoundBox clickPoint = ObjectCreator::GenerateClickPoint(playerCamera->GetPosition() + (0.2f * glm::vec3(playerCamera->GetDirection().x, 0.0f, Renderer::GetInstance()->GetCamera()->GetDirection().z)));
 	//return !CollisionDetection::PlayerWorldCollisionDetection(&clickPoint);
 	return true;
 }
 
 bool Player::MoveBackwartsPossible() {
-	BoundBox clickPoint = ObjectCreator::GenerateClickPoint(playerCamera->GetPosition() - (0.2f * glm::vec3(playerCamera->GetDirection().x, 0.0f, Renderer::GetCamera()->GetDirection().z)));
+	BoundBox clickPoint = ObjectCreator::GenerateClickPoint(playerCamera->GetPosition() - (0.2f * glm::vec3(playerCamera->GetDirection().x, 0.0f, Renderer::GetInstance()->GetCamera()->GetDirection().z)));
 	//return !CollisionDetection::PlayerWorldCollisionDetection(&clickPoint);
 	return true;
 }
 
 bool Player::MoveLeftPossible() {
-	BoundBox clickPoint = ObjectCreator::GenerateClickPoint(Renderer::GetCamera()->GetPosition() - glm::normalize(glm::cross(Renderer::GetCamera()->GetDirection(), Renderer::GetCamera()->GetUp())) * 0.2f);
+	BoundBox clickPoint = ObjectCreator::GenerateClickPoint(Renderer::GetInstance()->GetCamera()->GetPosition() - glm::normalize(glm::cross(Renderer::GetInstance()->GetCamera()->GetDirection(), Renderer::GetInstance()->GetCamera()->GetUp())) * 0.2f);
 	//return !CollisionDetection::PlayerWorldCollisionDetection(&clickPoint);
 	return true;
 }
 
 bool Player::MoveRightPossible() {
-	BoundBox clickPoint = ObjectCreator::GenerateClickPoint(Renderer::GetCamera()->GetPosition() + glm::normalize(glm::cross(Renderer::GetCamera()->GetDirection(), Renderer::GetCamera()->GetUp())) * 0.2f);
+	BoundBox clickPoint = ObjectCreator::GenerateClickPoint(Renderer::GetInstance()->GetCamera()->GetPosition() + glm::normalize(glm::cross(Renderer::GetInstance()->GetCamera()->GetDirection(), Renderer::GetInstance()->GetCamera()->GetUp())) * 0.2f);
 	//return !CollisionDetection::PlayerWorldCollisionDetection(&clickPoint);
 	return true;
 }

@@ -137,9 +137,9 @@ public:
 
 		window = CreateWindow::CreateWindow(windowWidth, windowHeight);
 
-		Renderer::height = windowHeight;
-		Renderer::width = windowWidth;
-		Renderer::initCamPos = glm::vec3(-lenseDistance, posY, posZ);
+		Renderer::GetInstance()->SetHeight(windowHeight);
+		Renderer::GetInstance()->SetWidth(windowWidth);
+		Renderer::GetInstance()->SetInitCamPos(glm::vec3(-lenseDistance, posY, posZ));
 
 		window.SetCallback(BUFFER_SIZE);
 		window.SetCallback(MOUSE_INPUT);
@@ -178,7 +178,7 @@ public:
 
 
 		// Initial camera setup necessary
-		auto cam = Renderer::GetCamera();
+		auto cam = Renderer::GetInstance()->GetCamera();
 		cam->SetPosition(glm::vec3(1.0f, 0.0f, 0.0f));
 		cam->SetDirection(normalize(glm::vec3(0.0f, 0.0f, 0.0f) - cam->GetPosition()));
 		cam->Update();

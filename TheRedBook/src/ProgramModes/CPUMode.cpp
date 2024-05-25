@@ -92,7 +92,7 @@ float iris_radius = 2.05f;
 void CPUMode::InitCPUMode(glm::vec3 in_imagePlanePos, glm::vec3 in_imagePlaneDir)
 {
 
-    Camera* cam = Renderer::GetCamera();  
+    Camera* cam = Renderer::GetInstance()->GetCamera();  
 
     lowerLeftCorner = cam->lower_left_corner;
     horizontal = cam->horizontal;
@@ -126,19 +126,18 @@ void CPUMode::Render() {
     ProgramParams::g = 10.0;
     ProgramParams::calcImageDist();
 
-     ProgramParams::g = 21.0;
-     double dval = lens.calcD();
-     lens.d = dval;     
-     
-     lens.dTolensRad();
+    ProgramParams::g = 21.0;
+    double dval = lens.calcD();
+    lens.d = dval;     
+    
+    lens.dTolensRad();
 
     std::cout << "f: " << ProgramParams::f << " dpt: " << ProgramParams::dpt << " dval: " << dval << std::endl;
 
     glm::vec3 circleCenter = glm::vec3(0.0f, 0.0f, 0.0f), normal = glm::vec3(1.0f, 0.0f, 0.0f);
     
     float circleRad = .15f;
-    int numCircles =1 , numPointsPerCircle = 1;
-    
+    int numCircles =1 , numPointsPerCircle = 1;    
 
     addCirclePoints(circleCenter, circleRad, numCircles, numPointsPerCircle, normal);
     

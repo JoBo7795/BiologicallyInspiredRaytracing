@@ -21,71 +21,171 @@
 
 class Renderer
 {
+
+public: 
+
+	static Renderer* GetInstance();
+
+	void RenderRayTraceShader(Shader shaderProgram);
+	void RenderHUD(Shader shaderProgram);
+	void Render(Shader shaderProgram);	
+	GameObject* GetQueueObject(GLuint gameObjectID);
+	void DeleteObjectFromQueue(GLuint id);
+	void DeleteChunkObjectFromQueue(GLuint chunkObjectID);
+	GLuint AppendToRenderQueue(GameObject& gameObject);
+	GLuint AppendToRTRenderQueue(GLuint& gameObject);
+	GLuint AppendToHUDRenderQueue(GameObject gameObject);
+	std::vector<GameObject> GetRenderQueue();
+	void FlushQueue();
+	void FlushQueueWithVAO();
+	void FlushRTQueue();
+	void FlushHUDQueue();
+	void SetCamera(Camera* camera);
+	Camera* GetCamera();
+	void SetRenderMode(GLuint renderMode);
+	GLuint GetRenderMode();	
+	GLfloat DeltaTime();
+
+
+
+
+	int GetTranslationModelLoc();
+	void SetTranslationModelLoc(int in_translationModelLoc);
+
+	int GetRotationModelLoc();
+	void SetRotationModelLoc(int in_rotationModelLoc);
+
+	int GetScaleModelLoc();
+	void SetScaleModelLoc(int in_scaleModelLoc);
+
+	int GetCustomColorModelLoc();
+	void SetCustomColorModelLoc(int in_customColorModelLoc);
+
+	int GetTextureSetModelLoc();
+	void SetTextureSetModelLoc(int in_textureSetModelLoc);
+
+	int GetCounter();
+	void SetCounter(int in_counter);
+
+	int GetChunkRenderCounter();
+	void SetChunkRenderCounter(int in_chunkRenderCounter);
+
+	int GetRenderQueueSize();
+	void SetRenderQueueSize(int in_renderQueueSize);
+
+	int GetLightPosModelLoc();
+	void SetLightPosModelLoc(int in_lightPosModelLoc);
+
+	int GetViewModelLoc();
+	void SetViewModelLoc(int in_viewModelLoc);
+
+	int GetProjectionModelLoc();
+	void SetProjectionModelLoc(int in_projectionModelLoc);
+
+	int GetViewPosModelLoc();
+	void SetViewPosModelLoc(int in_viewPosModelLoc);
+
+	glm::vec3 GetLightPos();
+	void SetLightPos(glm::vec3 in_lightPos);
+
+	bool GetShadowsActive();
+	void SetShadowsActive(bool in_shadows_active);
+
+	bool GetDebugMode();
+	void SetDebugMode(bool in_debugMode);
+
+	float GetGlobalRefractIndex();
+	void SetGlobalRefractIndex(float in_global_refract_index);
+
+	glm::vec2 GetFactXY();
+	void SetFactXY(glm::vec2 in_factXY);
+
+	bool GetRenderImageOnly();
+	void SetRenderImageOnly(bool in_renderImageOnly);
+
+	float GetLenseDistance();
+	void SetLenseDistance(float in_lenseDistance);
+
+	int GetLenseSizeX();
+	void SetLenseSizeX(float in_lenseSizeX);
+
+	float GetLenseSizeY();
+	void SetLenseSizeY(float in_lenseSizeY);
+
+	float GetLenseSizeZ();
+	void SetLenseSizeZ(float in_lenseSizeZ);
+
+	float GetSceneBrightness();
+	void SetSceneBrightness(float in_sceneBrightness);
+
+	float GetHeight();
+	void SetHeight(float in_height);
+
+	float GetWidth();
+	void SetWidth(float in_width);
+
+	int GetRenderDepth();
+	void SetRenderDepth(int in_renderDepth);
+
+	glm::vec3 GetInitCamPos();
+	void SetInitCamPos(glm::vec3 in_initCamPos);
+
+	glm::vec3 GetInitlowerLeftCorner();
+	void SetInitlowerLeftCorner(glm::vec3 in_initlowerLeftCorner);
+
+	glm::vec3 GetInitHorizontal();
+	void SetInitHorizontal(glm::vec3 in_initHorizontal);
+
+	glm::vec3 GetInitVertical();
+	void SetInitVertical(glm::vec3 in_initVertical);
+
+	glm::vec3 GetLensPos();
+	void SetLensPos(glm::vec3 in_lensPos);
+
 private:
+
+	static Renderer* instance;
 
 	static Camera* camera;
 	static GLuint renderMode, queueObjectID;
 	static std::vector<GameObject> RenderQueue, HUDRenderQueue;
 	static std::vector<GLuint> RayTraceRenderQueue;
-	static GLfloat lastFrame, deltaTime;	
+	static GLfloat lastFrame, deltaTime;
 
-	// variables for chunkRenderer
-	static int r_translationModelLoc;
-	static int r_rotationModelLoc;
-	static int r_scaleModelLoc;
-	static int r_customColorModelLoc;
-	static int r_textureSetModelLoc;
-	static int r_counter, r_chunkRenderCounter;
-	static int r_renderQueueSize;
-	static int lightPosModelLoc;
-	static int viewModelLoc;
-	static int projectionModelLoc;
-	static int viewPosModelLoc;
+	// GPU model locations
+	int r_translationModelLoc;
+	int r_rotationModelLoc;
+	int r_scaleModelLoc;
+	int r_customColorModelLoc;
+	int r_textureSetModelLoc;
+	int r_counter, r_chunkRenderCounter;
+	int r_renderQueueSize;
+	int r_lightPosModelLoc;
+	int r_viewModelLoc;
+	int r_projectionModelLoc;
+	int r_viewPosModelLoc;
 
 
-	static void CalcDeltaTime();
+	glm::vec3 r_lightPos;
+	bool r_shadows_active;
+	bool r_debugMode;
+	float r_global_refract_index;
+	glm::vec2 r_factXY;
+	bool r_renderImageOnly;
+	float r_lenseDistance;
+	float r_lenseSizeX;
+	float r_lenseSizeY;
+	float r_lenseSizeZ;
+	float r_sceneBrightness;
+	float r_height;
+	float r_width;
+	int r_renderDepth;
+	glm::vec3 r_initCamPos;
+	glm::vec3 r_initlowerLeftCorner;
+	glm::vec3 r_initHorizontal;
+	glm::vec3 r_initVertical;
+	glm::vec3 r_lensPos;
 
-public: 
-	static void RenderHUD(Shader shaderProgram);
-	static void RenderRayTrace(Shader shaderProgram);
-	static void InitChunkRenderer(Shader shaderProgram);
-	static void Render(Shader shaderProgram);	
-	static GameObject* GetQueueObject(GLuint gameObjectID);
-	static void DeleteObjectFromQueue(GLuint id);
-	static void DeleteChunkObjectFromQueue(GLuint chunkObjectID);
-	static GLuint AppendToRenderQueue(GameObject& gameObject);
-	static GLuint AppendToRTRenderQueue(GLuint& gameObject);
-	static GLuint AppendToHUDRenderQueue(GameObject gameObject);
-	static std::vector<GameObject> GetRenderQueue();
-	static void FlushQueue();
-	static void FlushQueueWithVAO();
-	static void FlushRTQueue();
-	static void FlushHUDQueue();
-	static void SetCamera(Camera* camera);
-	static Camera* GetCamera();
-	static void SetRenderMode(GLuint renderMode);
-	static GLuint GetRenderMode();	
-	static GLfloat DeltaTime();
-
-	static glm::vec3 lightPos;
-	static bool shadows_active;
-	static bool debugMode;
-	static float global_refract_index;
-	static glm::vec2 factXY;
-	static bool renderImageOnly;
-	static float lenseDistance;
-	static float lenseSizeX;
-	static float lenseSizeY;
-	static float lenseSizeZ;
-	static float sceneBrightness;
-	static float height;
-	static float width;
-	static int renderDepth;
-	static glm::vec3 initCamPos;
-	static glm::vec3 initlowerLeftCorner;
-	static glm::vec3 initHorizontal;
-	static glm::vec3 initVertical;
-	static glm::vec3 lensPos;
-
+	void CalcDeltaTime();
 };
 

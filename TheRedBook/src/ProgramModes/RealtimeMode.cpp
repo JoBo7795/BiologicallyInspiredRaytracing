@@ -1,19 +1,24 @@
 #include "RealtimeMode.h"
 
-glm::vec3 RealtimeMode::imagePlanePos, RealtimeMode::imagePlaneDir;
-bool RealtimeMode::debugMode;
-Camera* RealtimeMode::cam;
-Camera RealtimeMode::debugCam;
-int RealtimeMode::imageWidth;
-int RealtimeMode::imageHeight;
-LensData RealtimeMode::lens;
+RealtimeMode* RealtimeMode::instance = nullptr;
 
+RealtimeMode* RealtimeMode::GetInstance() {
 
+	if (instance == nullptr) {
+		instance = new RealtimeMode();
+	}
+
+	return instance;
+}
+
+RealtimeMode::RealtimeMode() {
+	rendererInstanceRef = Renderer::GetInstance();
+}
 
 void RealtimeMode::InitPictureMode(float in_lenseDistance, bool in_debugMode, int in_rDepth) {
-	cam = Renderer::GetCamera();
-	Renderer::lenseDistance = in_lenseDistance;
-	Renderer::renderDepth = in_rDepth;
+	cam = rendererInstanceRef->GetCamera();
+	rendererInstanceRef->SetLenseDistance(in_lenseDistance);
+	rendererInstanceRef->SetRenderDepth(in_rDepth);
 	debugMode = in_debugMode;
 
 	imageWidth = ProgramParams::windowWidth;
@@ -33,10 +38,10 @@ void RealtimeMode::SetDebugParams(glm::vec3 in_imagePlanePos, glm::vec3 in_image
 	debugCam.Update();
 
 
-	Renderer::initHorizontal = debugCam.horizontal;
-	Renderer::initVertical = debugCam.vertical;
-	Renderer::initlowerLeftCorner = debugCam.lower_left_corner;
-	Renderer::initCamPos = debugCam.GetPosition();
+	rendererInstanceRef->SetInitHorizontal(debugCam.horizontal);
+	rendererInstanceRef->SetInitVertical(debugCam.vertical);
+	rendererInstanceRef->SetInitlowerLeftCorner(debugCam.lower_left_corner);
+	rendererInstanceRef->SetInitCamPos(debugCam.GetPosition());
 }
 
 void RealtimeMode::SetCameraParams(glm::vec3 in_imagePlanePos, glm::vec3 in_imagePlaneDir) {
@@ -98,21 +103,38 @@ void RealtimeMode::Render() {
 		ImGui::Text(glm::to_string(currentMouseDirection).c_str());
 		ImGui::End();
 
-		ImGui::Begin("Refraction");		
-		ImGui::Text(std::to_string(Renderer::global_refract_index).c_str());
-		ImGui::InputFloat("Index(G): ", &Renderer::global_refract_index, .05f, 1.0f);
-		ImGui::SliderFloat("Lense Distance ", &Renderer::lenseDistance, 0.0f, 3000.0f);
-		ImGui::SliderFloat("Lense SizeX ", &Renderer::lenseSizeX, 0.0f, 3.0f);
-		
-		ImGui::SliderFloat("Lense SizeY ", &Renderer::lenseSizeY, 0.0f, 100.0f);
-		ImGui::SliderFloat("Lense SizeZ ", &Renderer::lenseSizeZ, 0.0f, 100.0f);
-		ImGui::SliderFloat("Retinal Image FormX", &Renderer::factXY.x, -100.0f, 100.0f);
-		ImGui::SliderFloat("RaysPerPixel", &Renderer::factXY.y, 1.0f, 100.0f);
+		ImGui::Begin("Refraction");	
+		float refractIndex  = rendererInstanceRef->GetGlobalRefractIndex();
+		float lensDistance = rendererInstanceRef->GetLenseDistance();
+		float lensSizeX	= rendererInstanceRef->GetLenseSizeX();
+		float lensSizeY	= rendererInstanceRef->GetLenseSizeY();
+		float lensSizeZ	= rendererInstanceRef->GetLenseSizeZ();
+		glm::vec2 factXY = rendererInstanceRef->GetFactXY();
 
-		ImGui::InputFloat("Index(G): ", &Renderer::factXY.x, .05f, 1.0f);
-		ImGui::InputFloat("Index(G): ", &Renderer::factXY.y, .05f, 1.0f);
+		ImGui::Text(std::to_string(refractIndex).c_str());
+
+		ImGui::InputFloat("Index(G): ", &refractIndex, .05f, 1.0f);
+		ImGui::SliderFloat("Lense Distance ", &lensDistance, 0.0f, 3000.0f);
+
+		ImGui::SliderFloat("Lense SizeX ", &lensSizeX, 0.0f, 3.0f);		
+		ImGui::SliderFloat("Lense SizeY ", &lensSizeY, 0.0f, 100.0f);
+		ImGui::SliderFloat("Lense SizeZ ", &lensSizeZ, 0.0f, 100.0f);
+
+		ImGui::SliderFloat("Retinal Image FormX", &factXY.x, -100.0f, 100.0f);
+		ImGui::SliderFloat("RaysPerPixel", &factXY.y, 1.0f, 100.0f);
+
+		ImGui::InputFloat("Index(G): ", &factXY.x, .05f, 1.0f);
+		ImGui::InputFloat("Index(G): ", &factXY.y, .05f, 1.0f);
 
 		ImGui::End();
+
+		rendererInstanceRef->SetGlobalRefractIndex(refractIndex);
+		rendererInstanceRef->SetLenseDistance(lensDistance);
+		rendererInstanceRef->SetLenseSizeX(lensSizeX);
+		rendererInstanceRef->SetLenseSizeY(lensSizeY);
+		rendererInstanceRef->SetLenseSizeZ(lensSizeZ);
+		rendererInstanceRef->SetFactXY(factXY);
+
 
 
 		ProgramParams::g = 14.0;
@@ -120,7 +142,7 @@ void RealtimeMode::Render() {
 
 
 		
-		Renderer::lensPos = cam->GetPosition();
+		rendererInstanceRef->SetLensPos(cam->GetPosition());
 		cam->SetPosition(lens.lensOrigin + glm::normalize(lens.lensOriginLeft) * glm::vec3(ProgramParams::b));
 		if (cam->updateData)
 			cam->Update();
@@ -128,10 +150,10 @@ void RealtimeMode::Render() {
 			cam->SetDirection(glm::vec3(1.0f, 0.0f, 0.0f));
 			
 			cam->Update();
-			Renderer::initHorizontal = cam->horizontal;
-			Renderer::initVertical = cam->vertical;
-			Renderer::initlowerLeftCorner = cam->lower_left_corner;
-			Renderer::initCamPos = cam->GetPosition();
+			rendererInstanceRef->SetInitHorizontal(cam->horizontal);
+			rendererInstanceRef->SetInitVertical(cam->vertical);
+			rendererInstanceRef->SetInitlowerLeftCorner(cam->lower_left_corner);
+			rendererInstanceRef->SetInitCamPos(cam->GetPosition());
 			first = false;
 
 			// Activate to debug
@@ -142,7 +164,7 @@ void RealtimeMode::Render() {
 
 		}
 
-		Renderer::RenderHUD(ProgramParams::FragmentHUD);
+		rendererInstanceRef->RenderRayTraceShader(ProgramParams::FragmentHUD);
 
 		currentMouseDirection = cam->GetPosition() + cam->GetDirection();
 

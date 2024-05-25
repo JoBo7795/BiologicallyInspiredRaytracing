@@ -2,7 +2,7 @@
 
 #define RENDER_IMAGE_ONLY true
 #define CPU_RENDER false
-#define DEBUG_MODE false
+#define DEBUG_MODE true
 void Scene::SceneDescription() {
 
 	ProgramParams::picOnly = RENDER_IMAGE_ONLY;
@@ -17,7 +17,7 @@ void Scene::SceneDescription() {
 
 	lenseDistance = 2.136;
 	ProgramParams::f = lenseDistance;
-	g = 10.0f;
+
 
 	glm::vec3 imagePlanePos(-lenseDistance, 0, 0);
 	glm::vec3 imagePlaneDir(normalize(glm::vec3(1, 0, 0)));
@@ -97,13 +97,14 @@ void Scene::SceneDescription() {
 
 
 	// Camera Options //
-	auto cam = Renderer::GetCamera();
+	auto cam = Renderer::GetInstance()->GetCamera();
 
 	cam->SetPosition(imagePlanePos);
 	cam->SetDirection(imagePlaneDir);
 	cam->Update();
 
-
+	RealtimeMode* realTimeMode = RealtimeMode::GetInstance();
+	PictureMode* pictureMode = PictureMode::GetInstance();
 
 	// Debug Position Parameters //
 	if (DEBUG_MODE) {
@@ -111,8 +112,8 @@ void Scene::SceneDescription() {
 		glm::vec3 debugImagePlanePos(0.0, posY, posX);
 		glm::vec3 debugImagePlaneDir(glm::normalize(glm::vec3(1.0,0.0,0.0)));
 
-		PictureMode::SetDebugParams(debugImagePlanePos, debugImagePlaneDir);
-		RealtimeMode::SetDebugParams(debugImagePlanePos, debugImagePlaneDir);
+		pictureMode->SetDebugParams(debugImagePlanePos, debugImagePlaneDir);
+		realTimeMode->SetDebugParams(debugImagePlanePos, debugImagePlaneDir);
 		CPUMode::SetDebugParams(debugImagePlanePos, debugImagePlaneDir);
 
 		cam->SetPosition(glm::vec3(0.0, 0.0, -40.0));
@@ -127,13 +128,13 @@ void Scene::SceneDescription() {
 			CPUMode::InitCPUMode(imagePlanePos, imagePlaneDir);			
 		}
 		else {
-			PictureMode::InitPictureMode(lenseDistance, true, DEBUG_MODE);
+			pictureMode->InitPictureMode(lenseDistance, true, DEBUG_MODE);
 		}
 		
 	}
 	else {
-		RealtimeMode::InitPictureMode(lenseDistance, true, DEBUG_MODE);
-		RealtimeMode::SetCameraParams(imagePlanePos, imagePlaneDir);
+		realTimeMode->InitPictureMode(lenseDistance, true, DEBUG_MODE);
+		realTimeMode->SetCameraParams(imagePlanePos, imagePlaneDir);
 		
 	}
 }

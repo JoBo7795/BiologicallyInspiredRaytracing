@@ -55,7 +55,7 @@ int main(int argc, char* argv[])
 
 	GameObject Canvas = ObjectCreator::Generate2DSquare();
 
-	Renderer::AppendToHUDRenderQueue(Canvas);
+	Renderer::GetInstance()->AppendToHUDRenderQueue(Canvas);
 	
 	if (ProgramParams::picOnly) {
 		
@@ -63,7 +63,7 @@ int main(int argc, char* argv[])
 			CPUMode::Render();
 		}
 		else {
-			PictureMode::Render();
+			PictureMode::GetInstance()->Render();
 		}
 
 		ProgramParams::window.SwapChain();
@@ -72,12 +72,11 @@ int main(int argc, char* argv[])
 	}
 	else {
 		
-		RealtimeMode::Render();
+		RealtimeMode::GetInstance()->Render();
 
 	}
 
 	ProgramParams::window.DeleteWindow();
-	system("Pause");
 
 	return 0;
 }

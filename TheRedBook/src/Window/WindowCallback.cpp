@@ -12,25 +12,25 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 	if (NO_CAM_MOVEMENT)
 		return;
 
-	glm::vec3 direction = Renderer::GetCamera()->GetDirection();
+	glm::vec3 direction = Renderer::GetInstance()->GetCamera()->GetDirection();
 
-	Renderer::GetCamera()->rawXposMouse = xpos;
-	Renderer::GetCamera()->rawYposMouse = ypos;
+	Renderer::GetInstance()->GetCamera()->rawXposMouse = xpos;
+	Renderer::GetInstance()->GetCamera()->rawYposMouse = ypos;
 
 	direction.x = cos(glm::radians(xpos)) * cos(glm::radians(-ypos));
 	direction.y = sin(glm::radians(ypos));
 	direction.z = sin(glm::radians(xpos)) * cos(glm::radians(ypos));	
 
-	Renderer::GetCamera()->SetDirection(glm::normalize(direction));
+	Renderer::GetInstance()->GetCamera()->SetDirection(glm::normalize(direction));
 }
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-	Renderer::GetCamera()->SetZoom(Renderer::GetCamera()->GetZoom() - (float)yoffset);
-	if (Renderer::GetCamera()->GetZoom() < 1.0f)
-		Renderer::GetCamera()->SetZoom(1.0f);
-	if (Renderer::GetCamera()->GetZoom() > 45.0f)
-		Renderer::GetCamera()->SetZoom(45.0f);
+	Renderer::GetInstance()->GetCamera()->SetZoom(Renderer::GetInstance()->GetCamera()->GetZoom() - (float)yoffset);
+	if (Renderer::GetInstance()->GetCamera()->GetZoom() < 1.0f)
+		Renderer::GetInstance()->GetCamera()->SetZoom(1.0f);
+	if (Renderer::GetInstance()->GetCamera()->GetZoom() > 45.0f)
+		Renderer::GetInstance()->GetCamera()->SetZoom(45.0f);
 }
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
@@ -38,7 +38,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
 
 
-		Camera* camera = Renderer::GetCamera();
+		Camera* camera = Renderer::GetInstance()->GetCamera();
 		glm::vec3 viewPos = camera->GetPosition();
 		float M_PI = 3.14159265359;
 		float x = camera->rawXposMouse, y = camera->rawYposMouse;

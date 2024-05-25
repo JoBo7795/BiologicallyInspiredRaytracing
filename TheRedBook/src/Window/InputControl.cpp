@@ -3,17 +3,17 @@ bool rAltReleased = true;
 bool ffReleased = true;
 void InputControl::processInput(GLFWwindow* window, Player* player)
 {
-
+	auto rendererReference = Renderer::GetInstance();
 
 	const float cameraSpeed = 0.05f; // adjust accordingly
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
 	if (glfwGetKey(window, GLFW_KEY_F1) == GLFW_PRESS)
-		Renderer::SetRenderMode(GL_FILL);
+		rendererReference->SetRenderMode(GL_FILL);
 	if (glfwGetKey(window, GLFW_KEY_F2) == GLFW_PRESS)
-		Renderer::SetRenderMode(GL_LINE);
+		rendererReference->SetRenderMode(GL_LINE);
 	if (glfwGetKey(window, GLFW_KEY_F3) == GLFW_PRESS)
-		Renderer::shadows_active = !Renderer::shadows_active;
+		rendererReference->SetShadowsActive(!rendererReference->GetShadowsActive());
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS && player->MoveForwardPossible())
 		player->MoveForward();
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS && player->MoveBackwartsPossible())
@@ -25,7 +25,7 @@ void InputControl::processInput(GLFWwindow* window, Player* player)
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
 		player->ActivateJump();
 	if (glfwGetKey(window, GLFW_KEY_RIGHT_ALT) == GLFW_PRESS && rAltReleased) {
-		auto cam = Renderer::GetCamera();
+		auto cam = rendererReference->GetCamera();
 		cam->updateData = !cam->updateData;
 		rAltReleased = false;
 	}
@@ -55,13 +55,16 @@ void InputControl::processInput(GLFWwindow* window, Player* player)
 		ffReleased = true;
 	}
 	if (glfwGetKey(window, GLFW_KEY_PAGE_UP) == GLFW_PRESS) {
-		Renderer::global_refract_index += .1f;
+		float currVal = rendererReference->GetGlobalRefractIndex();
+		rendererReference->SetGlobalRefractIndex((currVal += .1f));
 	}
 
 	
-	if (glfwGetKey(window, GLFW_KEY_PAGE_DOWN) == GLFW_PRESS)
-		Renderer::global_refract_index -= .1f;
+	if (glfwGetKey(window, GLFW_KEY_PAGE_DOWN) == GLFW_PRESS) {
+		float currVal = rendererReference->GetGlobalRefractIndex();
+		rendererReference->SetGlobalRefractIndex((currVal -= .1f));
+	}
 
-	if (Renderer::global_refract_index < 0.0f)
-		Renderer::global_refract_index = 0.0f;
+	if (rendererReference->GetGlobalRefractIndex() < 0.0f)
+		rendererReference->SetGlobalRefractIndex(0.0f);
 }

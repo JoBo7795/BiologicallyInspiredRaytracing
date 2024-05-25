@@ -16,23 +16,27 @@
 class PictureMode
 {
 public:
-	static void InitPictureMode(float in_lenseDistance, bool in_renderImageOnly,bool debugMode = false, int in_rDepth = 4);
-	static const float infinity;
-	static glm::vec3 imagePlanePos, imagePlaneDir;
-	static bool debugMode;
-	static Camera* cam,debugCam;
-	static LensData lens;
+	void InitPictureMode(float in_lenseDistance, bool in_renderImageOnly,bool debugMode = false, int in_rDepth = 4);
+	void Render();
+	void SetDebugParams(glm::vec3 in_imagePlanePos, glm::vec3 in_imagePlaneDir);	
+	static PictureMode* GetInstance();
 
-	static int imageWidth;
-	static int imageHeight;
-	static int numRenders;
-	static int numLoops;
-	static int stepX;
-	static int stepY;
 
-	static void Render();
+private:
+	static PictureMode* instance;
+	int imageWidth;
+	int imageHeight;
+	int numRenders;
+	int numLoops;
+	int stepX;
+	int stepY;
 
-	static void SetDebugParams(glm::vec3 in_imagePlanePos, glm::vec3 in_imagePlaneDir);
-
+	const float infinity;
+	glm::vec3 imagePlanePos, imagePlaneDir;
+	bool debugMode;
+	Camera* cam, debugCam;
+	Renderer* rendererInstanceRef;
+	LensData lens;
+	PictureMode();
 };
 

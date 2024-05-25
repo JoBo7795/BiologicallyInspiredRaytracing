@@ -1,25 +1,28 @@
 #include "PictureMode.h"
 
-glm::vec3 PictureMode::imagePlanePos, PictureMode::imagePlaneDir;
-bool PictureMode::debugMode;
-Camera* PictureMode::cam;
-Camera PictureMode::debugCam;
 
-int PictureMode::imageWidth;
-int PictureMode::imageHeight;
-int PictureMode::numRenders;
-int PictureMode::numLoops;
-int PictureMode::stepX;
-int PictureMode::stepY;
-LensData PictureMode::lens;
-const float PictureMode::infinity = std::numeric_limits<float>::infinity();
+PictureMode* PictureMode::instance = nullptr;
 
+PictureMode* PictureMode::GetInstance() {
+
+	if (instance == nullptr) {
+		instance = new PictureMode();
+	}
+
+	return instance;
+}
+
+PictureMode::PictureMode(): infinity(std::numeric_limits<float>::infinity())
+{
+	rendererInstanceRef = Renderer::GetInstance();
+}
 
 void PictureMode::InitPictureMode(float in_lenseDistance, bool in_renderImageOnly,bool in_debugMode, int in_rDepth) {
-	cam = Renderer::GetCamera();
-	Renderer::lenseDistance = in_lenseDistance;
-	Renderer::renderImageOnly = in_renderImageOnly;
-	Renderer::renderDepth = in_rDepth;
+
+	cam = Renderer::GetInstance()->GetCamera();
+	Renderer::GetInstance()->SetLenseDistance(in_lenseDistance);
+	Renderer::GetInstance()->SetRenderImageOnly(in_renderImageOnly);
+	Renderer::GetInstance()->SetRenderDepth(in_rDepth);
 	debugMode = in_debugMode;
 
 	imageWidth = ProgramParams::windowWidth;
@@ -42,10 +45,10 @@ void PictureMode::SetDebugParams(glm::vec3 in_imagePlanePos, glm::vec3 in_imageP
 	debugCam.Update();
 
 
-	Renderer::initHorizontal = debugCam.horizontal;
-	Renderer::initVertical = debugCam.vertical;
-	Renderer::initlowerLeftCorner = debugCam.lower_left_corner;
-	Renderer::initCamPos = debugCam.GetPosition();
+	Renderer::GetInstance()->SetInitHorizontal(debugCam.horizontal);
+	Renderer::GetInstance()->SetInitVertical (debugCam.vertical);
+	Renderer::GetInstance()->SetInitlowerLeftCorner(debugCam.lower_left_corner);
+	Renderer::GetInstance()->SetInitCamPos(debugCam.GetPosition());
 }
 
 
@@ -91,14 +94,14 @@ void PictureMode::Render() {
 
 	ProgramParams::calcImageDist();
 
-	Renderer::sceneBrightness = ProgramParams::sceneBrightness/100;
+	Renderer::GetInstance()->SetSceneBrightness(ProgramParams::sceneBrightness/100);
 
 	if (debugMode) {
 
 		 SetDebugParams(glm::vec3(0.0, 0.0, 0.0), glm::vec3(1.0, 0.0, 0.0));
 
 		 lens.lensOrigin = debugCam.GetPosition();
-		 Renderer::lensPos = lens.lensOrigin;
+		 Renderer::GetInstance()->SetLensPos(lens.lensOrigin);
 		 debugCam.SetPosition(lens.lensOrigin + glm::normalize(lens.lensOriginLeft) * glm::vec3(ProgramParams::b));
 		 debugCam.Update();
 
@@ -108,7 +111,7 @@ void PictureMode::Render() {
 	else {
 
 		lens.lensOrigin = debugCam.GetPosition();
-		Renderer::lensPos = lens.lensOrigin;
+		Renderer::GetInstance()->SetLensPos(lens.lensOrigin);
 		cam->SetPosition(lens.lensOrigin + glm::normalize(lens.lensOriginLeft) * glm::vec3(ProgramParams::b));
 		cam->Update();	
 
@@ -128,10 +131,10 @@ void PictureMode::Render() {
 
 			glScissor(i * stepX, j * stepY, stepX, stepY);
 
-			Renderer::debugMode = debugMode;
-			Renderer::renderImageOnly = true;
-			Renderer::renderDepth = ProgramParams::rDepth;
-			Renderer::RenderHUD(ProgramParams::FragmentHUD);
+			Renderer::GetInstance()->SetDebugMode(debugMode);
+			Renderer::GetInstance()->SetRenderImageOnly (true);
+			Renderer::GetInstance()->SetRenderDepth(ProgramParams::rDepth);
+			Renderer::GetInstance()->RenderRayTraceShader(ProgramParams::FragmentHUD);
 
 			double progress = static_cast<double>(i * numLoops + j) / numRenders;
 
