@@ -13,18 +13,15 @@ RealtimeMode* RealtimeMode::GetInstance() {
 
 RealtimeMode::RealtimeMode() {
 	rendererInstanceRef = Renderer::GetInstance();
-}
-
-void RealtimeMode::InitPictureMode(float in_lenseDistance, bool in_debugMode, int in_rDepth) {
 	cam = rendererInstanceRef->GetCamera();
-	rendererInstanceRef->SetLenseDistance(in_lenseDistance);
-	rendererInstanceRef->SetRenderDepth(in_rDepth);
-	debugMode = in_debugMode;
+	rendererInstanceRef->SetLenseDistance(5.0f);
+	rendererInstanceRef->SetRenderDepth(4);
+	debugMode = false;
 
 	imageWidth = ProgramParams::windowWidth;
 	imageHeight = ProgramParams::windowHeight;
-
 }
+
 
 void RealtimeMode::SetDebugParams(glm::vec3 in_imagePlanePos, glm::vec3 in_imagePlaneDir) {
 	imagePlanePos = in_imagePlanePos;
@@ -205,4 +202,97 @@ void RealtimeMode::Render() {
 	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();
 
+}
+
+glm::vec3 RealtimeMode::GetImagePlanePos() {
+	return imagePlanePos;
+}
+
+
+void RealtimeMode::SetImagePlanePos(glm::vec3& newPos) {
+	imagePlanePos = newPos;
+}
+
+glm::vec3 RealtimeMode::GetImagePlaneDir() {
+	return imagePlaneDir;
+}
+
+
+void RealtimeMode::SetImagePlaneDir(glm::vec3& newDir) {
+	imagePlaneDir = newDir;
+}
+
+
+bool RealtimeMode::IsDebugMode() {
+	return debugMode;
+}
+
+
+void RealtimeMode::SetDebugMode(bool newDebugMode) {
+	debugMode = newDebugMode;
+}
+
+
+Camera* RealtimeMode::GetCamera() {
+	return cam;
+}
+
+
+void RealtimeMode::SetCamera(Camera* newCam) {
+	cam = newCam;
+}
+
+
+Camera RealtimeMode::GetDebugCamera() {
+	return debugCam;
+}
+
+
+void RealtimeMode::SetDebugCamera(Camera newDebugCam) {
+	debugCam = newDebugCam;
+}
+
+
+LensData RealtimeMode::GetLens() {
+	return lens;
+}
+
+
+void RealtimeMode::SetLens(LensData& newLens) {
+	lens = newLens;
+}
+
+
+Renderer* RealtimeMode::GetRendererInstanceRef() {
+	return rendererInstanceRef;
+}
+
+
+void RealtimeMode::SetRendererInstanceRef(Renderer* newRenderer) {
+	rendererInstanceRef = newRenderer;
+}
+
+float RealtimeMode::RendererGetLensDistance() {
+	return Renderer::GetInstance()->GetLenseDistance();
+}
+
+void RealtimeMode::RendererSetLensDistance(float lensDistance) {
+	Renderer::GetInstance()->SetLenseDistance(lensDistance);
+}
+
+bool RealtimeMode::RendererGetRenderImageOnly() {
+
+	return Renderer::GetInstance()->GetRenderImageOnly();
+}
+
+void RealtimeMode::RendererSetRenderImageOnly(bool renderImageOnly) {
+	Renderer::GetInstance()->SetRenderImageOnly(renderImageOnly);
+}
+
+int RealtimeMode::RendererGetRenderDepth() {
+	return Renderer::GetInstance()->GetRenderDepth();
+
+}
+void RealtimeMode::RendererSetRenderDepth(int renderDepth) {
+	Renderer::GetInstance()->SetLenseDistance(renderDepth);
 }

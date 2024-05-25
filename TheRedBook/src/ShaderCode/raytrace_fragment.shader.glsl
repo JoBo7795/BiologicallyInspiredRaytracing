@@ -36,11 +36,11 @@ layout(std140, binding = 0) uniform cam
     vec4 v;
 };
 
-uniform bool shadows_active;
+uniform bool shadowsActive;
 uniform bool debugMode;
 uniform bool renderImageOnly;
 uniform int  renderDepth;
-uniform float global_refract_index;
+uniform float globalRefractIndex;
 uniform float sceneBrightness;
 
 in vec3 fPos;
@@ -682,7 +682,7 @@ bool dielectric_scatter(
     in Ray r_in, hit_record rec, inout vec4 attenuation, inout Ray scattered, Triangle tri
 ) {
     attenuation = vec4(1.0f, 1.0f, 1.0f, 1.0f);
-    double refraction_ratio = rec.front_face ? (1.0f / global_refract_index) : ( global_refract_index);
+    double refraction_ratio = rec.front_face ? (1.0f / globalRefractIndex) : (globalRefractIndex);
     vec3 normal = rec.front_face ? normalize(-rec.normal) : normalize(rec.normal);
     vec3 unit_direction = normalize(r_in.direction);
 
@@ -1137,7 +1137,7 @@ vec4 ray_color(inout Ray r, int depth) {
         bool no_shadow =  false;
         color = world_hit_check(r, hit, no_reflect, no_shadow);
 
-        fColor *= float(!shadow_ray(r.origin, -normalize((r.origin - lightPos)))  || no_shadow || !shadows_active) * color;
+        fColor *= float(!shadow_ray(r.origin, -normalize((r.origin - lightPos)))  || no_shadow || !shadowsActive) * color;
 
         if (no_reflect) {
             break;

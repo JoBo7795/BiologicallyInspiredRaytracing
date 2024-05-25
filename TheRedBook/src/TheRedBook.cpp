@@ -77,6 +77,6 @@ int main(int argc, char* argv[])
 	}
 
 	ProgramParams::window.DeleteWindow();
-
+	system("Pause");
 	return 0;
 }

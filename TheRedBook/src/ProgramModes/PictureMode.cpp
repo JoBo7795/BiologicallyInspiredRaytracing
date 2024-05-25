@@ -15,15 +15,12 @@ PictureMode* PictureMode::GetInstance() {
 PictureMode::PictureMode(): infinity(std::numeric_limits<float>::infinity())
 {
 	rendererInstanceRef = Renderer::GetInstance();
-}
-
-void PictureMode::InitPictureMode(float in_lenseDistance, bool in_renderImageOnly,bool in_debugMode, int in_rDepth) {
 
 	cam = Renderer::GetInstance()->GetCamera();
-	Renderer::GetInstance()->SetLenseDistance(in_lenseDistance);
-	Renderer::GetInstance()->SetRenderImageOnly(in_renderImageOnly);
-	Renderer::GetInstance()->SetRenderDepth(in_rDepth);
-	debugMode = in_debugMode;
+	Renderer::GetInstance()->SetLenseDistance(5.0f);
+	Renderer::GetInstance()->SetRenderImageOnly(true);
+	Renderer::GetInstance()->SetRenderDepth(4);
+	debugMode = false;
 
 	imageWidth = ProgramParams::windowWidth;
 	imageHeight = ProgramParams::windowHeight;
@@ -32,6 +29,7 @@ void PictureMode::InitPictureMode(float in_lenseDistance, bool in_renderImageOnl
 	stepX = imageWidth / numLoops;
 	stepY = imageHeight / numLoops;
 }
+
 
 void PictureMode::SetDebugParams(glm::vec3 in_imagePlanePos, glm::vec3 in_imagePlaneDir) {
 	imagePlanePos = in_imagePlanePos;
@@ -180,4 +178,99 @@ void PictureMode::Render() {
 		}
 	}
 	
+}
+
+glm::vec3 PictureMode::GetImagePlanePos()  {
+	return imagePlanePos;
+}
+
+
+void PictureMode::SetImagePlanePos(glm::vec3& newPos) {
+	imagePlanePos = newPos;
+}
+
+glm::vec3 PictureMode::GetImagePlaneDir() {
+	return imagePlaneDir;
+}
+
+
+void PictureMode::SetImagePlaneDir( glm::vec3& newDir) {
+	imagePlaneDir = newDir;
+}
+
+
+bool PictureMode::IsDebugMode() {
+	return debugMode;
+}
+
+
+void PictureMode::SetDebugMode(bool newDebugMode) {
+	debugMode = newDebugMode;
+}
+
+
+Camera* PictureMode::GetCamera()  {
+	return cam;
+}
+
+
+void PictureMode::SetCamera(Camera* newCam) {
+	cam = newCam;
+}
+
+
+Camera PictureMode::GetDebugCamera()  {
+	return debugCam;
+}
+
+
+void PictureMode::SetDebugCamera(Camera newDebugCam) {
+	debugCam = newDebugCam;
+}
+
+
+LensData PictureMode::GetLens() {
+	return lens;
+}
+
+
+void PictureMode::SetLens(LensData& newLens) {
+	lens = newLens;
+}
+
+
+Renderer* PictureMode::GetRendererInstanceRef() {
+	return rendererInstanceRef;
+}
+
+
+void PictureMode::SetRendererInstanceRef(Renderer* newRenderer) {
+	rendererInstanceRef = newRenderer;
+}
+
+
+float PictureMode::RendererGetLensDistance() {
+	return Renderer::GetInstance()->GetLenseDistance();
+}
+
+void PictureMode::RendererSetLensDistance(float lensDistance) {
+	Renderer::GetInstance()->SetLenseDistance(lensDistance);
+}
+
+bool PictureMode::RendererGetRenderImageOnly() {
+
+	return Renderer::GetInstance()->GetRenderImageOnly();
+}
+
+void PictureMode::RendererSetRenderImageOnly(bool renderImageOnly) {
+	Renderer::GetInstance()->SetRenderImageOnly(renderImageOnly);
+}
+
+int PictureMode::RendererGetRenderDepth() {
+	return Renderer::GetInstance()->GetRenderDepth();
+
+}
+void PictureMode::RendererSetRenderDepth(int renderDepth) {
+
+	Renderer::GetInstance()->SetLenseDistance(renderDepth);
 }

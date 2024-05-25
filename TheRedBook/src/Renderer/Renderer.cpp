@@ -8,39 +8,6 @@ std::vector<GameObject> Renderer::HUDRenderQueue;
 std::vector<GLuint> Renderer::RayTraceRenderQueue;
 GLfloat Renderer::lastFrame = 0.0f, Renderer::deltaTime = 0.0f;
 
-// TODO Need to refactor class
-
- // int Renderer::r_translationModelLoc;
- // int Renderer::r_rotationModelLoc;
- // int Renderer::r_scaleModelLoc;
- // int Renderer::r_customColorModelLoc;
- // int Renderer::r_textureSetModelLoc;
- // int Renderer::r_counter, Renderer::r_chunkRenderCounter;
- // int Renderer::r_renderQueueSize;
- // int Renderer::lightPosModelLoc;
- // int Renderer::viewModelLoc;
- // int Renderer::projectionModelLoc;
- // int Renderer::viewPosModelLoc;
-
-// float Renderer::lenseDistance = 0;//291.68f;
-// float Renderer::lenseSizeX = 1.0f;
-// float Renderer::lenseSizeY = 1.0f;
-// float Renderer::lenseSizeZ = 1.0f;
-// float Renderer::sceneBrightness = 1.0f;
-// glm::vec3 Renderer::lightPos = glm::vec3(1000.0f, -1000.0f, 0.0f);
-// bool Renderer::shadows_active = false;
-// bool Renderer::debugMode = false;
-// float Renderer::global_refract_index = 1.59f;
-// glm::vec2 Renderer::factXY;
-// bool Renderer::renderImageOnly = false;
-// float Renderer::height = 1920;
-// float Renderer::width = 1080;
-// int Renderer::renderDepth = 3;
-// glm::vec3 Renderer::initCamPos;
-// glm::vec3 Renderer::initlowerLeftCorner;
-// glm::vec3 Renderer::initHorizontal;
-// glm::vec3 Renderer::initVertical;
-// glm::vec3 Renderer::lensPos = glm::vec3(0.0);
  Renderer* Renderer::instance;
 
 
@@ -83,13 +50,13 @@ void Renderer::RenderRayTraceShader(Shader shaderProgram) {
 		modelLoc = glGetUniformLocation(shaderID, "lightPos");
 		glUniform3f(modelLoc, r_lightPos.x, r_lightPos.y, r_lightPos.z);
 
-		modelLoc = glGetUniformLocation(shaderID, "shadows_active");
+		modelLoc = glGetUniformLocation(shaderID, "shadowsActive");
 		glUniform1i(modelLoc, r_shadows_active);
 
 		modelLoc = glGetUniformLocation(shaderID, "debugMode");
 		glUniform1i(modelLoc, r_debugMode);
 
-		modelLoc = glGetUniformLocation(shaderID, "global_refract_index");
+		modelLoc = glGetUniformLocation(shaderID, "globalRefractIndex");
 		glUniform1f(modelLoc, r_global_refract_index);
 
 		modelLoc = glGetUniformLocation(shaderID, "factXY");

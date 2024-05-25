@@ -128,12 +128,18 @@ void Scene::SceneDescription() {
 			CPUMode::InitCPUMode(imagePlanePos, imagePlaneDir);			
 		}
 		else {
-			pictureMode->InitPictureMode(lenseDistance, true, DEBUG_MODE);
+			pictureMode->SetDebugMode(DEBUG_MODE);
+			pictureMode->RendererSetLensDistance(lenseDistance);
+			pictureMode->RendererSetRenderImageOnly(true);
+
 		}
 		
 	}
 	else {
-		realTimeMode->InitPictureMode(lenseDistance, true, DEBUG_MODE);
+
+		realTimeMode->SetDebugMode(DEBUG_MODE);
+		realTimeMode->RendererSetLensDistance(lenseDistance);
+		realTimeMode->RendererSetRenderImageOnly(true);
 		realTimeMode->SetCameraParams(imagePlanePos, imagePlaneDir);
 		
 	}
